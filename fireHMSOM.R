@@ -35,7 +35,7 @@ fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' pa
                                                                                                    #(e.g., the presence of fruiting trees may have an effect on frugivorous rodents, but there's little reason it would interest carnivorous jaguars
                                                                                                    #[I know it probably indirectly would, as jaguars want to eat the rodents, but this was just the best example I could think of ;)])
            #Above is our first occurence model, i.e., that for year 1
-            #psi[i,j,y] = The probability of species i occuring at site j in year y. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1
+            #psi[i,j,y] = The probability of species $${\color{red}i}$$ occuring at site j in year y. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1
                           #anD this is problematic when trying to estimate the effect sizes of predictor variables. Logit transforming the probabilities puts them on a continuous scale
                           #i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1)
             #abar[i] = The standard model intercept parameter for species i, this is species-specific but is always the same regardless of year or site
