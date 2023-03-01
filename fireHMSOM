@@ -1,3 +1,5 @@
+```{r}
+
 #A Bayesian Hierarchical Multi Species Occupancy model written using the 'nimble' language and MCMC sampler.
 #NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but it is much faster (for these models at least)
 #and it has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
@@ -8,10 +10,7 @@
 
 #####The Annotated Model#####
 
-```r 
-// fireMod <- nimbleCode({
-```
-#This line just defines the model as a 'nimble' package object
+fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' package object
   
   #####Likelihood#####        #The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: 
                               #species occurence and detection probabilities
@@ -432,3 +431,5 @@ fireMod <- nimbleCode({
     }
   }
 })
+
+```
