@@ -1,15 +1,18 @@
 #A Bayesian Hierarchical Multi Species Occupancy model written using the 'nimble' language and MCMC sampler.
+#NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but it is much faster (for these models at least)
+#and it has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
 
-#I first provide the model script with detailed annotations, and then below it I provide only the model script itself.
+#I first provide the model script with detailed annotations, and then below it I provide only the model script itself,
 #just in case it isn't clear what are annotations and what are actual model components. Annotations always start with a hashtag #, 
 #but I realise I've written a lot of annotations, so the actual model code has become a bit disjointed in the first section! Sorry :)
 
 #####The Annotated Model#####
 
-fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' package object
+```r 
+//fireMod <- nimbleCode({  ```     #This line just defines the model as a 'nimble' package object
   
-  #####Likelihood#####        #The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest 
-                              #i.e., species occurence and detection probabilities
+  #####Likelihood#####        #The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: 
+                              #species occurence and detection probabilities
   
   for(i in 1:nSpObs){         #We estimate occurrence and detection parameters for every species in the data set individually
     
@@ -32,7 +35,7 @@ fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' pa
                                                                                                    #You also don't necessarily have to include the same variables for each species, although we don't want to make the model too complex 
                                                                                                    #(e.g., the presence of fruiting trees may have an effect on frugivorous rodents, but there's little reason it would interest carnivorous jaguars
                                                                                                    #[I know it probably indirectly would, as jaguars want to eat the rodents, but this was just the best example I could think of ;)])
-           #Here (above) is our first occurence model, i.e., that for year 1
+           #Above is our first occurence model, i.e., that for year 1
             #psi[i,j,y] = The probability of species i occuring at site j in year y. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1
                           #anD this is problematic when trying to estimate the effect sizes of predictor variables. Logit transforming the probabilities puts them on a continuous scale
                           #i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1)
