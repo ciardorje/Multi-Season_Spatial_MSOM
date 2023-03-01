@@ -9,7 +9,7 @@
 #####The Annotated Model#####
 
 ```r 
-//fireMod <- nimbleCode({
+// fireMod <- nimbleCode({
 ```
 #This line just defines the model as a 'nimble' package object
   
