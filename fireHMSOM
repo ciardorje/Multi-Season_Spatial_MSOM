@@ -1,5 +1,3 @@
-```{r}
-
 #A Bayesian Hierarchical Multi Species Occupancy model written using the 'nimble' language and MCMC sampler.
 #NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but it is much faster (for these models at least)
 #and it has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
@@ -8,6 +6,7 @@
 #just in case it isn't clear what are annotations and what are actual model components. Annotations always start with a hashtag #, 
 #but I realise I've written a lot of annotations, so the actual model code has become a bit disjointed in the first section! Sorry :)
 
+```
 #####The Annotated Model#####
 
 fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' package object
