@@ -8,7 +8,7 @@
 
 #####The Annotated Model#####
 
-`fireMod <- nimbleCode({`       This line just defines the model as a 'nimble' package object
+fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' package object
   
   #####Likelihood#####        #The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: 
                               #species occurence and detection probabilities
@@ -28,7 +28,7 @@
         if(y == 1){           #Here we define the occurence model for the first year of samping
                               #we symbolise 'year of sampling' as y, and if y == 1 then the code will perform the below model
           
-          logit(psi[i,j,y]) <- abar[i] + a[i,j,y] + inprod(bOCV[i,1:nOCV], PatchOCV[j,y,1:nOCV])   #We don't have any knowledge of species occurrence before year 1, as sampling hadn't started then
+          logit(psi[i,j,y]) <- abar[i] + a[i,j,y] + inprod(bOCV[i,1:nOCV], PatchOCV[j,y,1:nOCV])   #We don't have any knowledge of species occurrence before year 1, as sampling hadn't started 
                                                                                                    #Therefore, we just estimate species occurence probabilities as the outcome of our predictor variables 
                                                                                                    #(e.g., burn status, average temperature, etc. - whatever variables you think might effect a species' occurence can be included here) 
                                                                                                    #You also don't necessarily have to include the same variables for each species, although we don't want to make the model too complex 
@@ -36,7 +36,7 @@
                                                                                                    #[I know it probably indirectly would, as jaguars want to eat the rodents, but this was just the best example I could think of ;)])
            #Above is our first occurence model, i.e., that for year 1
             #psi[i,j,y] = The probability of species i occuring at site j in year y. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1
-                          #anD this is problematic when trying to estimate the effect sizes of predictor variables. Logit transforming the probabilities puts them on a continuous scale
+                          #and this is problematic when trying to estimate the effect sizes (slopes) of predictor variables. Logit transforming the probabilities puts them on a continuous scale
                           #i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1)
             #abar[i] = The standard model intercept parameter for species i, this is species-specific but is always the same regardless of year or site
             #a[i,j,y] = The spatial autocorrelation parameter. I have let this vary by year, as in my research ongoing deforestation may result in sites becoming further apart over time
