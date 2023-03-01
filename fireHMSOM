@@ -6,7 +6,6 @@
 #just in case it isn't clear what are annotations and what are actual model components. Annotations always start with a hashtag #, 
 #but I realise I've written a lot of annotations, so the actual model code has become a bit disjointed in the first section! Sorry :)
 
-```
 #####The Annotated Model#####
 
 fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' package object
@@ -430,5 +429,3 @@ fireMod <- nimbleCode({
     }
   }
 })
-
-```
