@@ -8,7 +8,7 @@
 
 #####The Annotated Model#####
 
-fireMod <- nimbleCode({       #This line just defines the model as a 'nimble' package object
+`fireMod <- nimbleCode({`       This line just defines the model as a 'nimble' package object
   
   #####Likelihood#####        #The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: 
                               #species occurence and detection probabilities
