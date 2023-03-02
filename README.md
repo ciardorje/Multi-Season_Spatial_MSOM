@@ -24,7 +24,8 @@ And, finally, we estimate occurrence and detection probabilities at each site in
 ```r
       for(year in 1:nYears){  
 ```
-Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. This model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we did allow these effects to vary between years it would likely result in a very complex model with very uncertain results.
+Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. 
+<sub> N.B.: This model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we did allow these effects to vary between years it would likely result in a very complex model with very uncertain results. </sub>
 ```r
         if(year == 1){
         
@@ -33,7 +34,9 @@ Occurrence probabilities for each species in each site will be linked to each ot
           }
 ```
 Above is our first occurence model. The parameters are:
-* **psi[sp,site,year]** = The probability of a species occuring at a given site in a given year. We calculate this on the logit scale as probabilities are constrained                           to values between 0 and 1 and this is problematic when trying to estimate the effect sizes (slopes) of predictor variables. Logit                                     transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to                               true probability values (0-1).
+* ***psi[sp,site,year]*** = The probability of a species occuring at a given site in a given year. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1 and this is problematic when trying to estimate the effect sizes (slopes) of predictor variables. Logit transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
+* ***abar[sp]*** = The standard model intercept parameter for a given species, this is species-specific but is always the same regardless of year or site.
+* ***a[i,j,y] = The spatial autocorrelation parameter. I have let this vary by year, as in my research ongoing deforestation may result in sites becoming further apart over time. However, if your camera traps were always placed at the same spot every year, then it might not need to be calculated independently for each year. In my opinion, this whole parameter/concept is questionable. It works on the assumption that species are more likely to occur in sites that are closer to other sites, but it doesn't take into account whether or not the species actually occured in the other sites. There are ways to take into account whether species occurr in neighbouring sites, but these methods are also questionable as the whole point of this model is that we don't know for sure if a species actually does occur at any of the sites (unless we actually see them)! To be honest, I found the concept of this process cool so I wanted to see if I could code it, but it might not be worth using. There are ways to determine whether or not including this parameter improves model performance, which I can help with.
 
 
 
