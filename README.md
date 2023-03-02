@@ -36,7 +36,7 @@ For our model the constants and data will be:
 
 ## The Model ##
 
-First, we want to give the model a name (fireMod) and tell R that we are going to be providing some NIMBLE code. This line does just that:
+First, we want to give the model a name ```fireMod``` and tell R that we are going to be providing some ```nimble``` code. This line does just that:
 ```r
 fireMod <- nimbleCode({    
 ```
