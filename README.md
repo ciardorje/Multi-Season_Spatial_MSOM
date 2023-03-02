@@ -7,12 +7,12 @@ Here I provide the model script with detailed annotations, and then in the fireH
 
 ## The Model ##
 
-First, we want to give the model a name (fireMod) and tell R that we are going to be providing some NIMBLE code. This line does just that.
+First, we want to give the model a name (fireMod) and tell R that we are going to be providing some NIMBLE code. This line does just that:
 ```r
 fireMod <- nimbleCode({    
 ```
 ### Likelihood ###
-In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: species occurence and detection. probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to perform the model 'for' each species i:
+In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest, that is species occurence and detection probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to execute the model 'for' each species seperately:
 ```r
   for(sp in 1:nSps){ 
 ```
@@ -33,7 +33,7 @@ Occurrence probabilities for each species in each site will be linked to each ot
           }
 ```
 Above is our first occurence model. The parameters are:
-*psi[sp,site,year] = The probability of a species occuring at a given site in a given year. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1 and this is problematic when trying to estimate the effect sizes (slopes) of predictor variables. Logit transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
+* psi[sp,site,year] = The probability of a species occuring at a given site in a given year. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1 and this is problematic when trying to estimate the effect sizes (slopes) of predictor variables. Logit transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
 
 
 
