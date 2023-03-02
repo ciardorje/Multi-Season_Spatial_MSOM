@@ -1,9 +1,9 @@
 # Pantanal Fires Occupancy Model
 A Hierarchical Multi Species Occupancy Model for estimating the effects of wildfires on the occurence of mammal species in the Brazillian Pantanal. This is a multi-season model, which incorporates the potential influence of spatial autocorellation via a Gaussian Process intercept.
 
-The model is written using the 'nimble' language and MCMC sampler. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found it to be much faster (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (i.e., parameters that can only be 0 or 1, like whether or not a species is present at a site). In my research I'm particularly interested in the discrete parameters, hence I like NIMBLE, I think you most likely will be too. Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
+The model is written using the 'nimble' language and MCMC sampler. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found it to be much faster (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (i.e., parameters that can only be 0 or 1, like whether or not a species is present at a site). I'm particularly interested in the discrete parameters in my research, hence I like NIMBLE, and I think you most likely will be interested in these parameters too. Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
 
-Here I provide the model script with detailed annotations, and then in the fireHMSOM.R file I provide only the model script itself and additionally include the code for the actual running of the model. 
+Here I provide the model script with detailed annotations. Then, in the fireHMSOM.R file, I provide just the model script itself and additionally include the code for the actual running of the model. 
 
 ## The Model ##
 
@@ -12,7 +12,7 @@ First, we want to give the model a name (fireMod) and tell R that we are going t
 fireMod <- nimbleCode({    
 ```
 ### Likelihood ###
-In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest, that is species occurence and detection probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to execute the model 'for' each species seperately:
+In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest, that is species occurence and detection probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to execute the model ```for``` each species seperately:
 ```r
   for(sp in 1:nSps){ 
 ```
