@@ -3,7 +3,7 @@ A Hierarchical Multi Species Occupancy Model for estimating the effects of wildf
 
 The model is written using the 'nimble' language and MCMC sampler. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found it to be much faster (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (i.e., parameters that can only be 0 or 1, like whether or not a species is present at a site). Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
 
-Here I provide the model script with detailed annotations, and then in the fireHMSOM.R file I provide only the model script itself and additionally include the actual running of the model. 
+Here I provide the model script with detailed annotations, and then in the fireHMSOM.R file I provide only the model script itself and additionally include the code for the actual running of the model. 
 
 ## The Model ##
 
