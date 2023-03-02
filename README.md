@@ -111,11 +111,11 @@ Remember one of our inputs at the start was ```Z``` (note the upper case)? Well 
 
 <br>
 
-The elements of our observed occurence records ```Z``` inform the model, but the level of information we can gain from our observation records varies depending on whether or not the species was observed. Where ```Z[sp,site,year] = 1```, we know for certain that the species was at that site in that year, and the model can use this to inform upon its estimates of the effects of covariates on species occurrence. In these cases, the model will 'try' to generate a high occurence probability for that site in that year ```psi[sp,site,year]``` so that when we apply the Bernoulli trial to ```psi[sp,site,year]``` we are more likely to get a value of 1, indicating that the species is present, and thus matching ```Z[sp,site,year]```.     
+The elements of our observed occurence records ```Z``` inform the model. However, the level of information we can gain from our observation records varies depending on whether or not the species was observed. Where ```Z[sp,site,year] = 1```, we know for certain that the species was at that site in that year, and the model can use this to inform upon its estimates of the effects of covariates on species occurrence. In these cases, the model will 'try' to generate a high occurence probability for that site in that year ```psi[sp,site,year]``` so that when we apply the Bernoulli trial to ```psi[sp,site,year]``` we are more likely to get a value of 1, indicating that the species is present, and thus matching ```Z[sp,site,year]```.     
 
 <br>
 
-However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive indication that the species did not occur at that site in that year. We may just not have been able to detect it. So, for the sake of simplcity, the model will ignore these values. This isn't entirely true, as these non-observations are used to estimate detection probabilities in the detection models below, but in general little information can be gained from a non-observation (i.e., ```Z[sp,site,year] = 0```) alone.
+However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive indication that the species did not occur at that site in that year. We may just not have been able to detect it. So, for the sake of simplcity, the model will ignore these values. This isn't entirely true, as these non-observations are used to estimate detection probabilities in the detection models below, but in general little information can be gained from a non-observation (i.e., ```Z[sp,site,year] = 0```) compared to confirmed observations.
 
 
 We provide the data to the model in the form of lists:
