@@ -45,16 +45,25 @@ Above is our first occurence model. The parameters are:
 
 In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a species occured at a site in the previous year. We can incorporate this knowledge in our models for years 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```} else {``` statement, which is linked to the ```if(year = 1)``` statement above, i.e., if year is > 1 perform the model above, else perform the model below.
 
-```} else {
+```
+      } else {
 
-      logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV]) + (theta[sp] * z[sp,site,(year-1)])
+        logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV]) + 
+                                    (theta[sp] * z[sp,site,(year-1)])
     
-    }
+      }
 ```
 The only difference here is the 'theta' parameter
-* ```theta[sp]``` = The increase in occurence probability (on the logit scale) if the species DID occur within the site in the year before, i.e., ```(year-1)```. We know whether or not the species occurred there in the year before from ```z[sp,site,(year-1)]```
+* ```theta[sp]``` = The increase in occurence probability (on the logit scale) if the species DID occur within the site in the year before, i.e., ```(year-1)```. We know whether or not the species occurred in that site in the year before from ```z[sp,site,(year-1)]```...
 * ```z[sp,site,(year-1)]``` = A binary variable indicating whether (1) or not (0) a species occured at a site in the year before. I'll cover more on how this is estimated in a moment.   
 
-This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., for samples from the year 4, if the species occured at the site in all 3 previous years, the probability it would occur at the site in year 4 may be even higher). I'd have to look into how to do this but I am happy to if you wanted to do that. 
+This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., if you had a sample from year 4 and you knew that the species occured at the site in all 3 previous years, the probability that the species would occurr at the site in year 4 may be even higher than if it had just occurred there in year 3). I'd have to look into how to do this but I am happy to if you wanted to do that.    
+
+<br>
+That's the end of our occurence probability estimation. Now we want to know whether or not the species actually occured at each site (or at least estimate whether it did. That is represented by the ```z``` parameter mentioned above:
+```
+    z[i,j,y] ~ dbern(psi[i,j,y])
+```
+
 
 
