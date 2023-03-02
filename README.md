@@ -111,7 +111,7 @@ Remember one of our inputs at the start was ```Z``` (note the upper case)? Well 
 
 <br>
 
-The elements of our observed occurence records, ```Z```, inform the model, but the level of information we can gain from our observation records varies depending on whether or not the species was observed. Where ```Z[sp,site,year] = 1``` we know for certain that the species was at that site in that year, and the model can use this to inform upon its estimates of the effects of covariates on species occurrence (i.e., it will 'try' to generate a high occurence probability for that site in that year ```psi[sp,site,year]``` so that when we apply the Bernoulli trial we are more likely to get a value of 1, indicating that the species is present).     
+The elements of our observed occurence records ```Z``` inform the model, but the level of information we can gain from our observation records varies depending on whether or not the species was observed. Where ```Z[sp,site,year] = 1```, we know for certain that the species was at that site in that year, and the model can use this to inform upon its estimates of the effects of covariates on species occurrence. In these cases, the model will 'try' to generate a high occurence probability for that site in that year ```psi[sp,site,year]``` so that when we apply the Bernoulli trial to ```psi[sp,site,year]``` we are more likely to get a value of 1, indicating that the species is present, and thus matching ```Z[sp,site,year]```.     
 
 <br>
 
