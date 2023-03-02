@@ -39,13 +39,13 @@ Above is our first occurence model. The parameters are:
 * ```bOCV[sp,1:nOCV]``` = A 2D matrix (species by covariate) containing the slope (b or beta) parameters for each of our predictor variables (also known as covariates). These are calculated independently for each species. We can have as many predictors as we want, so to keep the model tidy I have included these parameters in a matrix with the same number of columns as predictor variables, i.e. ```1:nOCV```, where nOCV represents the number of predictors: number(n) of occurence(O) covariates(CV).
 * ```siteOCV[j,y,1:nOCV]``` = A 3D matrix (sites by year by covariate) containing the values of the predictor variables at each site in each year. You can include whatever you want as predictor variables/covariates (e.g., burn status, average temperature, etc. - whatever variables you think might affect a species' occurrence probability).
 
-```inprod()``` is simply a tidy way of multiplying matrices (i.e, each beta/slope estimate ```bOCV``` multiplied by its corresponding site-specific covariate value ```siteOCV```). This just multiplies each value in one matrix by the corresponding value in the other matrix, e.g., ```matrix1[1,1] * matrix2[1,1]``` and so on, and then sums all the results.     
+```r inprod()``` is simply a tidy way of multiplying matrices (i.e, each beta/slope estimate ```r bOCV``` multiplied by its corresponding site-specific covariate value ```r siteOCV```). This just multiplies each value in one matrix by the corresponding value in the other matrix, e.g., ```r matrix1[1,1] * matrix2[1,1]``` and so on, and then sums all the results.     
 
 <br>
 
-In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a species occured at a site in the previous year. We can incorporate this knowledge in our models for years 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```} else {``` statement, which is linked to the ```if(year = 1)``` statement above, i.e., ```if year > 1``` perform the model above, ```else``` perform the model below.
+In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a species occured at a site in the previous year. We can incorporate this knowledge in our models for years 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```r } else {``` statement, which is linked to the ```r if(year = 1)``` statement above, i.e., ```r if year > 1``` perform the model above, ```r else``` perform the model below.
 
-```
+```r
       } else {
 
         logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV]) + 
@@ -61,7 +61,7 @@ This process (temporal correlation) could possibly be expanded to take into acco
 
 <br>
 That's the end of our occurence probability estimation. Now we want to know whether or not the species actually occured at each site (or at least estimate whether it did. That is represented by the ```z``` parameter mentioned above:
-```
+```r
     z[i,j,y] ~ dbern(psi[i,j,y])
 ```
 
