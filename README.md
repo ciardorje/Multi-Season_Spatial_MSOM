@@ -31,9 +31,7 @@ A quick note: this model assumes that the effects of covariates (i.e., burning, 
         if(year == 1){
         
           logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV])
-          
-          }
-```
+  ```
 Above is our first occurence model. The parameters are:
 * ```psi[sp,site,year]``` = The probability of a species occuring at a given site in a given year. We calculate this on the logit scale, i.e. ``` logit() ```. This is because probabilities are constrained to values between 0 and 1, which can cause problems when when trying to estimate the effect sizes (slopes) of predictor variables. Logit transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
 * ```abar[sp]``` = The standard model intercept parameter for a given species, this is species-specific but is always the same regardless of year or site.
@@ -45,4 +43,16 @@ Above is our first occurence model. The parameters are:
 
 <br>
 
-In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a given species occured at a given site in the previous year. We can incorporate this knowledge in our models for year 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```} else {``` statement, which is linked to the ```if(year = 1)``` statement above, i.e., if year is > 1 perform the model above, else perform the model below.
+In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a species occured at a site in the previous year. We can incorporate this knowledge in our models for years 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```} else {``` statement, which is linked to the ```if(year = 1)``` statement above, i.e., if year is > 1 perform the model above, else perform the model below.
+
+```} else {
+
+      logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV]) + (theta[sp] * z[sp,site,(year-1)])
+    
+    }
+```
+The only difference here is the 'theta' parameter
+* ```theta[sp]``` = The increase in occurence probability (on the logit scale) if species i DID occur within site j in the year before (y-1)
+This could possibly be expanded to take into account multiple years before y (i.e., for samples from the fourth year, if the species occured at the site in all 3 previous years, the probability it would occur at the site in year 4 may be even higher). I'd have to look into how to do this but happy to if you wanted to do that. 
+
+
