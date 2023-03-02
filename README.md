@@ -12,27 +12,28 @@ First, we want to give the model a name (fireMod) and tell R that we are going t
 fireMod <- nimbleCode({    
 ```
 ### Likelihood ###
-The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: species occurence and detection probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to perform the model 'for' each species i:
+In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: species occurence and detection. probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to perform the model 'for' each species i:
 ```r
-  for(i in 1:nSps){ 
+  for(sp in 1:nSps){ 
 ```
 We also estimate species occurrence and detection parameters at each site independently. So we tell the model to do this too:
 ```r
-    for(j in 1:nSites){ 
+    for(site in 1:nSites){ 
 ```
 And, finally, we estimate occurrence and detection probabilities at each site in each year independently:
 ```r
-      for(y in 1:nYears){  
+      for(year in 1:nYears){  
 ```
-Occurrence probabilities for each species in each site will be linked to each other across years, but first we will define the model for year 1, the first year of your sampling:
+Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. This model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we did allow these effects to vary between years it would likely result in a very complex model with very uncertain results.
 ```r
-        if(y == 1){
+        if(year == 1){
         
-          logit(psi[i,j,y]) <- abar[i] + a[i,j,y] + inprod(bOCV[i,1:nOCV], PatchOCV[j,y,1:nOCV])
+          logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV])
           
           }
 ```
-
+Above is our first occurence model. The parameters are:
+*psi[sp,site,year] = The probability of a species occuring at a given site in a given year. We calculate this on the logit scale as probabilities are constrained to values between 0 and 1 and this is problematic when trying to estimate the effect sizes (slopes) of predictor variables. Logit transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
 
 
 
