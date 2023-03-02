@@ -52,7 +52,7 @@ In the first year of sampling we didn't have any prior knowledge of species occu
     }
 ```
 The only difference here is the 'theta' parameter
-* ```theta[sp]``` = The increase in occurence probability (on the logit scale) if species i DID occur within site j in the year before (y-1)
+* ```theta[sp]``` = The increase in occurence probability (on the logit scale) if species i DID occur within site j in the year before (y-1).    
 This could possibly be expanded to take into account multiple years before y (i.e., for samples from the fourth year, if the species occured at the site in all 3 previous years, the probability it would occur at the site in year 4 may be even higher). I'd have to look into how to do this but happy to if you wanted to do that. 
 
 
