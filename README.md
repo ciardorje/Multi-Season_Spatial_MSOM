@@ -43,7 +43,7 @@ Above is our first occurence model. The parameters are:
 
 <br>
 
-In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a species occured at a site in the previous year. We can incorporate this knowledge in our models for years 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```} else {``` statement, which is linked to the ```if(year = 1)``` statement above, i.e., ```if year > 1``` perform the model above, ```else``` perform the model below.
+In the first year of sampling we didn't have any prior knowledge of species occurence. However, from year 2 onwards we have some idea of whether or not a species occured at a site in the previous year. We can incorporate this knowledge in our models for years 2, 3 and 4. To do this we define a second occurence model, which is only executed if the data is from year 2, 3 or 4. We express this criterion using an ```} else {``` statement, which is linked to the ```if(year == 1)``` statement above, i.e., ```if(year == 1)``` perform the model above, ```else``` perform the model below.
 
 ```r
       } else {
