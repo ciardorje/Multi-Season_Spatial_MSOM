@@ -28,7 +28,8 @@ For our model the constants and data will be:
 * Data:
   * Z = A binary 3D array, with dimensions ```nSites x nSps x nYears```, where cell values indicate whether (1) or not (0) each species was detected at each site in each year, across all trapping weeks combined.  
   * Y = A 4D binary array, with dimensions ```nSites x nSps x nYears x nTrapWeeks```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, within in each year. 
-   * If the number of trap weeks varies among sites and years, the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the cells with ```NA``` as the model indexing will mean that these cells are never accessed. For example, if one site was sampled for 20 weeks the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20
+    * If the number of trap weeks varies among sites and years, the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the cells with ```NA``` as the model indexing will mean that these cells are never accessed.
+    * For example, if one site (j) was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable that we provided in the constants will be 20. Therefore, even if another site was sampled for 30 weeks, the model will only ever access up to the 20th cell in the row of Y corresponding to site j.
   * 
 
 ## The Model ##
