@@ -40,7 +40,10 @@ First, we want to give the model a name (fireMod) and tell R that we are going t
 fireMod <- nimbleCode({    
 ```
 ### Likelihood ###
-In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest, that is species occurence and detection probabilities. We estimate occurrence and detection parameters for every species in the data set individually. So we want to execute the model ```for``` each species seperately:
+In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest, that is species occurence and detection probabilities. There will be some parameters in this section that you will not see in the above list of data inputs. That's because these are the parameters we are interested in estimating. We will create space to 'place' these estimates later in the model, but for now I explain what each new parameter is after it is first mentioned.      
+
+
+We estimate occurrence and detection parameters for every species in the data set individually. So we want to execute the model ```for``` each species seperately:
 ```r
   for(sp in 1:nSps){ 
 ```
@@ -65,8 +68,8 @@ Above is our first occurence model. The parameters are:
 * ```abar[sp]``` = The standard model intercept parameter for a given species, this is species-specific but is always the same regardless of year or site.
 * ```a[sp,site,year]``` = The spatial autocorrelation parameter. 
   * I have let this vary by year, as in my research ongoing deforestation may result in sites becoming further apart over time. However, if your camera traps were always placed at the same spot every year, then you might not need to calculate this independently for each year. 
-  * In my opinion, this whole parameter/concept is questionable. It works on the assumption that species are more likely to occur in sites that are closer to other sites, but it doesn't take into account whether or not the species actually occured in the other sites. 
-  * There are ways to take into account whether species occur in neighbouring sites, but these methods are also questionable as the whole point of this model is that we don't know for sure if a species actually does occur at any of the sites (that is, unless we actually see them there)! 
+  * In my opinion, this whole parameter/concept is questionable. It works on the assumption that species are more likely to occur in sites that are closer to other sites, but it doesn't take into account whether or not the species actually occurred in the other sites. 
+  * There are ways to take into account whether or not species occurred in neighbouring sites. However, these methods are also questionable as the whole point of this model is that we don't know for sure if a species actually does occur at any of the sites (that is, unless we actually see them there)! 
   * To be honest, I found the concept of this process cool so I wanted to see if I could code it, but it might not be worth using. There are ways to determine whether or not including this parameter improves model performance, which I can help with.
 * ```bOCV[sp,1:nOCV]``` = A 2D matrix (species by covariate) containing the slope (b or beta) parameters for each of our predictor variables (also known as covariates). These are calculated independently for each species. We can have as many predictors as we want, so to keep the model tidy I have included these parameters in a matrix with the same number of columns as predictor variables, i.e. ```1:nOCV```, where nOCV represents the number of predictors: number(n) of occurence(O) covariates(CV).
 * ```siteOCV[j,y,1:nOCV]``` = A 3D matrix (sites by year by covariate) containing the values of the predictor variables at each site in each year. You can include whatever you want as predictor variables/covariates (e.g., burn status, average temperature, etc. - whatever variables you think might affect a species' occurrence probability).
