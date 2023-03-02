@@ -24,8 +24,7 @@ And, finally, we estimate occurrence and detection probabilities at each site in
 ```r
       for(year in 1:nYears){  
 ```
-Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. 
-<sub> N.B.: This model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we did allow these effects to vary between years it would likely result in a very complex model with very uncertain results. </sub>
+Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. A quick note: this model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we were to allow these effects to vary between years it would likely result in a very complex model with very uncertain results.
 ```r
         if(year == 1){
         
