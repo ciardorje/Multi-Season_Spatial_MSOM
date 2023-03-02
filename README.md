@@ -32,6 +32,7 @@ For our model the constants and data will be:
     * For example, if one site (j) was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable that we provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of Y was thus of length 30), the model will only ever access up to the 20th cell in the row of Y corresponding to site j.
   * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension)
   * ```SiteDCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the detection model covariates (that is, variables you think may effect species detection). Same structure as ```SiteOCV```.
+  * ```DMat2``` = A 2D matrix containing the squared geographic distance between each pair of camera trapping sites (both rows and columns will represent sites, and the cell values will represent the squared distance between a site in a given row and a site in a given column).
 
 ## The Model ##
 
