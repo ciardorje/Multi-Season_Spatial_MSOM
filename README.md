@@ -7,27 +7,29 @@ Here I provide the model script with detailed annotations. Then, in the fireHMSO
 
 ## The Data Inputs ##
 
-In NIMBLE model inputs come under two categories: 
+NIMBLE model inputs come under two categories: 
 
-* Constants - Numbers/matrices/arrays that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
+* Constants - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
 * Data - The variables that will be analysed, i.e., the response and predictor variables.       
 
 <br>
-
 For our model the constants and data will be:
-
-<br>
 
 * Constants:
   * ```nSps``` = The number of species you are modelling
   * ```nSites``` = The number of sites you sampled
   * ```nYears``` = The number of years you sampled for
   * ```nTrapWeeks``` = The number of independent sampling weeks (or whichever unit of time you group the photos by). If this is the same at every site across all years it could just be a single number. But if the length of time you deployed the camera traps varies between sites and years, it may need to be a matrix, with sites as rows, years as columns and cell values representing the number of weeks each site was sampled for in each year. 
+  * ```nOCV``` = The number of predictor variables to be included in the occurence model
+  * ```nDCV``` = The number of predictor variables to be included in the detection model
 
 <br>
 
-Data:
-* 
+* Data:
+ * Z = A binary 3D array, with dimensions ```nSites x nSps x nYears```, where cell values indicate whether (1) or not (0) each species was detected at each site in each year, across all trapping weeks combined.  
+ * Y = A 4D binary array, with dimensions ```nSites x nSps x nYears x nTrapWeeks```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, within in each year. 
+   * If the number of trap weeks varies among sites and years, the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the cells with ```NA``` as the model indexing will mean that these cells are never accessed. For example, if one site was sampled for 20 weeks the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20
+ * 
 
 ## The Model ##
 
