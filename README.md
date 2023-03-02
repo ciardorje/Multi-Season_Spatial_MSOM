@@ -1,7 +1,7 @@
-# Pantanal_Fires
+# Pantanal Fires Occupancy Model
 A Hierarchical Multi Species Occupancy Model for estimating the effects of wildfires on the occurence of mammal species in the Brazillian Pantanal. This is a multi-season model, which incorporates the potential influence of spatial autocorellation via a Gaussian Process intercept.
 
-The model is written using the 'nimble' language and MCMC sampler. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found it to be much faster (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (i.e., parameters that can only be 0 or 1, like whether or not a species is present at a site). Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
+The model is written using the 'nimble' language and MCMC sampler. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found it to be much faster (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (i.e., parameters that can only be 0 or 1, like whether or not a species is present at a site). In my research I'm particularly interested in the discrete parameters, hence I like NIMBLE, I think you most likely will be too. Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
 
 Here I provide the model script with detailed annotations, and then in the fireHMSOM.R file I provide only the model script itself and additionally include the code for the actual running of the model. 
 
@@ -11,15 +11,42 @@ First, we want to give the model a name (fireMod) and tell R that we are going t
 ```r
 fireMod <- nimbleCode({    
 ```
+### Likelihood ###
+The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: species occurence and detection probabilities. We estimate occurrence and detection parameters for every species i in the data set individually. So we want to perform the model 'for' each species i:
+```r
+  for(i in 1:nSps){ 
+```
+We also estimate species occurrence and detection parameters at each site independently. So we tell the model to do this too:
+```r
+    for(j in 1:nSites){ 
+```
+And, finally, we estimate occurrence and detection probabilities at each site in each year independently:
+```r
+      for(y in 1:nYears){  
+```
+Occurrence probabilities for each species in each site will be linked to each other across years, but first we will define the model for year 1, the first year of your sampling:
+```r
+        if(y == 1){
+        
+          logit(psi[i,j,y]) <- abar[i] + a[i,j,y] + inprod(bOCV[i,1:nOCV], PatchOCV[j,y,1:nOCV])
+          
+          }
+```
+
+
+
+
+                              #This works on the rational that if a species occurred at a site in year one, it is more likely to occur at that site in year two
+                              #(assuming that the site hasn't been burnt, logged etc., but the model will account for temporal changes in these factors too)
+                              
+                              #N.B.: This model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years
+                              #This is a fair assumption, and if we did allow these effects to vary between years it would likely result in a very complex model with very uncertain results
   
-  #####Likelihood#####        #The section below defines the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest: 
-                              #species occurence and detection probabilities
-  
-  for(i in 1:nSpObs){         #We estimate occurrence and detection parameters for every species i in the data set individually
+  for(i in 1:nSps){         
     
-    for(j in 1:nSites){       #We estimate species occurrence and detection parameters at each site independently
+    for(j in 1:nSites){       
       
-      for(y in 1:nYears){     #We also estimate occurrence and detection probabilities at each site in each year independently, but...
+      for(y in 1:nYears){     #We estimate occurrence and detection probabilities at each site in each year independently, but...
                               #occurrence probabilities for each species in each site will be linked to each other across years.
                               #This works on the rational that if a species occurred at a site in year one, it is more likely to occur at that site in year two
                               #(assuming that the site hasn't been burnt, logged etc., but the model will account for temporal changes in these factors too)
