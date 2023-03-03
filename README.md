@@ -137,7 +137,7 @@ However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive in
 
 ---
 
-### **Detection Model/s** ###
+### **Detection Model** ###
 
 So, we have now finished specifying our models of species occurence. But how can the model possibly know whether a species occured and was not detected (referred to as sampling zeros) or whether the species was not detected because it truly was not present (referred to as structural zeros)? This is done by seperate, but linked, models of species detection probabilities. We will define these now.     
 
