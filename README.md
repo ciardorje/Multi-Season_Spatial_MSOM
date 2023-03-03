@@ -9,8 +9,8 @@ Here I provide the model script with detailed annotations. Then, in the fireHMSO
 
 NIMBLE model inputs come under two categories: 
 
-* Constants - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
-* Data - The variables that will be analysed, i.e., the response and predictor variables. In our case we supply two main inputs       
+* ```Constants``` - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
+* ```Data``` - The variables that will be analysed, i.e., the response and predictor variables. In our case we supply two main inputs       
 
 <br>
 For our model the constants and data will be:
