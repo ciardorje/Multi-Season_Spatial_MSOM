@@ -114,10 +114,6 @@ The only difference here is the 'theta' parameter
 This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., if you had a sample from year 4 and you knew that the species occured at the site in all 3 previous years, the probability that the species would occur at the site in year 4 may be even higher than if it had just occurred there in year 3). I'd have to look into how to do this but I am happy to if you wanted to do that.    
 
 <br>
-
----
-
-### **Detection Model/s** ###
 That's the end of our occurence probability estimation. Now we want to know whether or not the species *actually* occured at each site (or at least estimate whether it did. These occurence estimates are represented by the ```z``` parameter mentioned above:
 
 ```r
@@ -137,6 +133,11 @@ The elements of our observed occurence records ```Z``` inform the model. However
 <br>
 
 However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive indication that the species did not occur at that site in that year. We may just not have been able to detect it. So, for the sake of simplcity, the model will ignore these values. This isn't entirely true, as these non-observations are used to estimate detection probabilities in the detection models below, but in general little information can be gained from a non-observation (i.e., ```Z[sp,site,year] = 0```) compared to confirmed observations.
+
+---
+
+### **Detection Model/s** ###
+
 
 
 
