@@ -76,9 +76,7 @@ Occurrence probabilities for each species in each site will be linked to each ot
         
           logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV])
   ```
-Above is our first occurence model, that for year 1. A quick note: this model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we were to allow these effects to vary between years it would likely result in a very complex model with very uncertain results.     
-
-The parameters are:
+Above is our first occurence model, that for year 1. The parameters are:
 * ```psi[sp,site,year]``` = The probability of a species occuring at a given site in a given year. 
   * We calculate this on the logit scale, i.e. ``` logit() ```. This is because probabilities are constrained to values between 0 and 1, which can cause problems when when trying to estimate the effect sizes (slopes) of predictor variables. 
   * Logit transforming puts the probabilities on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
@@ -91,6 +89,7 @@ The parameters are:
 * ```bOCV[sp,1:nOCV]``` = A 2D matrix (species by covariate) containing the slope (b or beta) parameters for each of our predictor variables (also known as covariates).
   * These are calculated independently for each species. 
   * We can have as many predictors as we want, so to keep the model tidy I have included these parameters in a matrix with the same number of columns as predictor variables, i.e. ```1:nOCV```, where nOCV represents the number of predictors: number(n) of occurence(O) covariates(CV).
+  * A quick note: this model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we were to allow these effects to vary between years it would likely result in a very complex model with very uncertain results.     
 * ```siteOCV[j,y,1:nOCV]``` = A 3D matrix (sites by year by covariate) containing the values of the predictor variables at each site in each year. 
   * You can include whatever you want as predictor variables/covariates (e.g., burn status, average temperature, etc. - whatever variables you think might affect a species' occurrence probability).
 
