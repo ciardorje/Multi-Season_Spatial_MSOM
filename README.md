@@ -26,8 +26,8 @@ For our model the constants and data will be:
 <br>
 
 * Data:
-  * ```Z``` = A binary 3D array, with dimensions ```nSites x nSps x nYears```, where cell values indicate whether (1) or not (0) each species was detected at each site in each year, across all trapping weeks combined.  
-  * ```Y``` = A 4D binary array, with dimensions ```nSites x nSps x nYears x max(nTrapWeeks)```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, in each year. 
+  * ```Z``` = Our occurence records. A binary 3D array, with dimensions ```nSites x nSps x nYears```, where cell values indicate whether (1) or not (0) each species was detected at each site in each year, across all trapping weeks combined.  
+  * ```Y``` = Our detection records. A 4D binary array, with dimensions ```nSites x nSps x nYears x max(nTrapWeeks)```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, in each year. 
     * If the number of trap weeks varies among sites and/or years, the length of the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the additional cells with ```NA```, as the model indexing will mean that these cells are never accessed.
     * For example, if one site ```j``` was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of ```Y``` was thus of length 30), the model will only ever access up to the 20th cell in the row of ```Y``` corresponding to site ```j```.
   * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension)
@@ -81,9 +81,9 @@ Above is our first occurence model, that for year 1. The parameters are:
   * We calculate this on the logit scale, i.e. ``` logit() ```. This is because probabilities are constrained to values between 0 and 1, which can cause problems when when trying to estimate the effect sizes (slopes) of predictor variables. 
   * Logit transforming puts the probabilities on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
 * ```abar[sp]``` = The standard model intercept parameter for a given species, this is species-specific but is always the same regardless of year or site.
-* ```a[sp,site,year]``` = The spatial autocorrelation parameter. 
+* ```a[sp,site,year]``` = The spatial autocorrelation parameter. This works on the assumption that species are more likely to occur in sites that are closer to other sites. So for sites close to other sites, this value will be higher. 
   * I have let this vary by year, as in my research ongoing deforestation may result in sites becoming further apart over time. However, if your camera traps were always placed at the same spot every year, then you might not need to calculate this independently for each year. 
-  * In my opinion, this whole parameter/concept is questionable. It works on the assumption that species are more likely to occur in sites that are closer to other sites, but it doesn't take into account whether or not the species actually occurred in the other sites. 
+  * In my opinion, this whole parameter/concept is questionable. It doesn't take into account whether or not the species actually occurred in the neighbouring sites.
   * There are ways to take into account whether or not species occurred in neighbouring sites. However, these methods are also questionable as the whole point of this model is that we don't know for sure if a species actually does occur at any of the sites (that is, unless we actually see them there)! 
   * To be honest, I found the concept of this process cool so I wanted to see if I could code it, but it might not be worth using. There are ways to determine whether or not including this parameter improves model performance, which I can help with.
 * ```bOCV[sp,1:nOCV]``` = A 2D matrix (species by covariate) containing the slope (b or beta) parameters for each of our predictor variables (also known as covariates).
@@ -114,6 +114,7 @@ The only difference here is the 'theta' parameter
 This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., if you had a sample from year 4 and you knew that the species occured at the site in all 3 previous years, the probability that the species would occur at the site in year 4 may be even higher than if it had just occurred there in year 3). I'd have to look into how to do this but I am happy to if you wanted to do that.    
 
 <br>
+
 That's the end of our occurence probability estimation. Now we want to know whether or not the species *actually* occured at each site (or at least estimate whether it did. These occurence estimates are represented by the ```z``` parameter mentioned above:
 
 ```r
@@ -124,23 +125,34 @@ We use a Bernoulli trial (which can only output either 0 or 1) with the probabil
 
 <br>
 
-Remember one of our inputs at the start was ```Z``` (note the upper case)? Well ```z``` (lower case) will contain the models attempts to correct for imperfect detection in our observed species occurence records (i.e., the values in that array ```Z```).    
+Remember one of our inputs at the start was ```Z``` (note the upper case)? Well ```z``` (lower case, the object in the above code) will contain the models attempts to correct for imperfect detection in our observed species occurence records (i.e., the values in that array ```Z```). In reality ```Z``` and ```z``` are the same object (we even specified that in our data input: ```data <- list(z = Z...```), but you can think of ```Z``` as an unchangeable version that will only *ever* include our observed occurences, while ```z``` can be altered by the model to add in instances (1 values) where the species occured but was not detected by our sampling.    
 
 <br>
 
-The elements of our observed occurence records ```Z``` inform the model. However, the level of information we can gain from our observation records varies depending on whether or not the species was observed. Where ```Z[sp,site,year] = 1```, we know for certain that the species was at that site in that year, and the model can use this to inform upon its estimates of the effects of covariates on species occurrence. In these cases, the model will 'try' to generate a high occurence probability for that site in that year ```psi[sp,site,year]``` so that when we apply the Bernoulli trial to ```psi[sp,site,year]``` we are more likely to get a value of 1, indicating that the species is present, and thus matching ```Z[sp,site,year]```.     
+The elements of our observed occurence records ```Z``` inform the model. However, the level of information we can gain from our observation records varies depending on whether or not the species was observed. Where ```Z[sp,site,year] = 1```, we know for certain that the species was at that site in that year, and the model can use this to inform upon its estimates of the effects of covariates on species occurrence. In these cases, the model will 'try' to generate a high occurence probability for the species in that site in that year ```psi[sp,site,year]``` so that when we apply the Bernoulli trial to ```psi[sp,site,year]``` we are more likely to get a value of 1, indicating that the species is present, and thus matching ```Z[sp,site,year]```.     
 
 <br>
 
-However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive indication that the species did not occur at that site in that year. We may just not have been able to detect it. So, for the sake of simplcity, the model will ignore these values. This isn't entirely true, as these non-observations are used to estimate detection probabilities in the detection models below, but in general little information can be gained from a non-observation (i.e., ```Z[sp,site,year] = 0```) compared to confirmed observations.
+However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive indication that the species did not occur at that site in that year. We may just not have been able to detect it. So, for the sake of simplcity, the model will ignore these values. This isn't entirely true, as these non-observations are indirectly used to estimate detection probabilities in the detection models below (via our ```Y``` data input), but in general little information can be gained from a non-observation (```Z[sp,site,year] = 0```) compared to confirmed observations (```Z[sp,site,year] = 1```).
 
 ---
 
 ### **Detection Model/s** ###
 
+So, we have now finished specifying our models of species occurence. But how can the model possibly know whether a species occured and was not detected (referred to as sampling zeros) or whether the species was not detected because it truly was not present (referred to as structural zeros)? This is done by seperate, but linked, models of species detection probabilities. We will define these now.     
 
 
+Occupancy models depend on having repeat samples of the same site - this is because in cases where we detected a species at a site in one trap week ```Y[sp,site,year,week = 1] = 1```, but then didn't detect that species at the site in the next trap week ```Y[sp,site,year,week = 2] = 0```, the model can be confident that the non-observation in the second week represents a sampling zero rather than a structural zero, i.e., the species was there, we just didn't detect it.   
 
+Here's our detection model. This time it's the same across all years:
+```r
+    for(week in 1:nTrapWeeks[site,year]){  
+          
+      logit(p[sp,site,week,year]) <- lp[sp,year] + inprod(bDCV[sp,1:nDCV], SampleDCV[site,week,year,1:nDCV])
+      y[sp,site,week,year] ~ dbern(p[sp,site,week,year] * z[sp,site,year]) 
+
+    }
+```
 
 
 
