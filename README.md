@@ -67,7 +67,7 @@ And, finally, we estimate occurrence and detection probabilities at each site in
 
 ---
 
-**Occurence Model/s**
+#### **Occurence Model/s** ####
 
 Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. We only want to run this model on data from the first year of sampling, so we specify this with ```if(year == 1){}```. 
 <br>
@@ -129,13 +129,6 @@ The elements of our observed occurence records ```Z``` inform the model. However
 <br>
 
 However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive indication that the species did not occur at that site in that year. We may just not have been able to detect it. So, for the sake of simplcity, the model will ignore these values. This isn't entirely true, as these non-observations are used to estimate detection probabilities in the detection models below, but in general little information can be gained from a non-observation (i.e., ```Z[sp,site,year] = 0```) compared to confirmed observations.
-
-
-We provide the data to the model in the form of lists:
-```r
-mod_constants <- list()
-mod_data <- list()
-```
 
 
 
