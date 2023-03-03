@@ -192,6 +192,8 @@ But if we had a variable that could only ever have a positive effect on species 
 </p>
 <br/>
 
-In most ecological situations we cannot be very confident on what the parameter estimate for a given species will be before we run the model. Therefore, we tend to use 'uninformative' priors - probability distributions with very wide ranges. The model will draw values from this distribution and gradually converge on the true distribution of values that the parameter is most likely to take. These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We will then use these posterior distributions for making inference on the effects of predictor variables, the occurence of species at sites, etc., we can extract a posterior distribution for any parameter estimated in the model structure.
+However, in most ecological situations we cannot be very confident on what the parameter estimate for a given species will be before we run the model. Therefore, we tend to use 'uninformative' priors - prior probability distributions with wide ranges. The model will draw values from this distribution and gradually converge on the true distribution of values that the parameter is most likely to take, as it tailors the parameter values to best reproduce our confirmed observations ```Z[] = 1``` and detection/non-detection data ```Y```.    
+
+These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We can use these posterior distributions to make inference on the effects of predictor variables, the occurence of species at sites, and so on - we can extract a posterior distribution for any parameter estimated in the model structure, which is why the possible analyses you coud do using the outputs of these models are so exciting!
 
 
