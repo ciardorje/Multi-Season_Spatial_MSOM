@@ -65,7 +65,9 @@ And, finally, we estimate occurrence and detection probabilities at each site in
       for(year in 1:nYears){  
 ```      
 
-__Occurence Model/s__
+---
+
+**Occurence Model/s**
 
 Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. We only want to run this model on data from the first year of sampling, so we specify this with ```if(year == 1){}```. 
 <br>
