@@ -9,8 +9,8 @@ Here I provide the model script with detailed annotations. Then, in the fireHMSO
 
 NIMBLE model inputs come under two categories: 
 
-* ```Constants``` - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
-* ```Data``` - The variables that will be analysed, i.e., the response and predictor variables. In our case we supply two main inputs       
+* ```constants``` - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
+* ```data``` - The variables that will be analysed, i.e., the response and predictor variables.      
 
 <br>
 For our model the constants and data will be:
@@ -33,6 +33,14 @@ For our model the constants and data will be:
   * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension)
   * ```SiteDCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the detection model covariates (that is, variables you think may effect species detection). Same structure as ```SiteOCV```.
   * ```DMat2``` = A 2D matrix containing the squared geographic distance between each pair of camera trapping sites (both rows and columns will represent sites, and the cell values will represent the squared distance between a site in a given row and a site in a given column). This may need to be a 3D array if the position of camera traps varied with year, withe 3rd dimension representing years    
+
+In our case the two main inputs are ```Z``` and ```Y```, containing our observed occurences and detections, respectively. These two inputs will be used by the model to estimate occurence and detection probabilities, and the model will output a new version of ```Z``` containing it's estimates of species occurence, '*corrected*' for imperfect detection.     
+
+We supply the model with the ```data``` and ```constants``` in the form of lists:
+```r
+data <- list(z = Z, y = Y, SiteOCV = SiteOCV, SiteDCV = SiteDCV, DMat2 = DMat2)
+constants <- list(nSps = nSps, nSites = nSites, nYears = nYears, nTrapWeeks = nTrapWeeks, nOCV = nOCV, nDCV = nDCV)
+```
 
 ## The Model ##
 
