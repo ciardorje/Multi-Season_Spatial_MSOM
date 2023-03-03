@@ -180,7 +180,7 @@ We provide this prior knowledge in the form of probability distributions, from w
 
 <br/>
 <p align="center">
-<img src="https://user-images.githubusercontent.com/92942535/222784865-db4e4575-956d-4c63-8642-5d090577db24.png", width="400" height="300">
+<img src="https://user-images.githubusercontent.com/92942535/222784865-db4e4575-956d-4c63-8642-5d090577db24.png">
 </p>
 <br/>
 
@@ -188,7 +188,7 @@ But if we had a variable that could only ever have a positive effect on species 
 
 <br/>
 <p align="center">
-<img src="https://user-images.githubusercontent.com/92942535/222785175-c67819be-5c81-4074-9f58-bcb5b0b30e71.png", width="400" height="300">
+<img src="https://user-images.githubusercontent.com/92942535/222785175-c67819be-5c81-4074-9f58-bcb5b0b30e71.png">
 </p>
 <br/>
 
