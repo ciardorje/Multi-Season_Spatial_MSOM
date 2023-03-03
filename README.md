@@ -114,6 +114,7 @@ The only difference here is the 'theta' parameter
 This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., if you had a sample from year 4 and you knew that the species occured at the site in all 3 previous years, the probability that the species would occur at the site in year 4 may be even higher than if it had just occurred there in year 3). I'd have to look into how to do this but I am happy to if you wanted to do that.    
 
 <br>
+
 ---
 
 ### **Detection Model/s** ###
