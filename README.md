@@ -10,7 +10,7 @@ Here I provide the model script with detailed annotations. Then, in the fireHMSO
 NIMBLE model inputs come under two categories: 
 
 * Constants - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
-* Data - The variables that will be analysed, i.e., the response and predictor variables.       
+* Data - The variables that will be analysed, i.e., the response and predictor variables. In our case we supply two main inputs       
 
 <br>
 For our model the constants and data will be:
@@ -18,7 +18,7 @@ For our model the constants and data will be:
 * Constants:
   * ```nSps``` = The number of species you are modelling
   * ```nSites``` = The number of sites you sampled
-  * ```nYears``` = The number of years you sampled for
+  * ```nYears``` = The number of years you sampled for. If this varies among sites, this may need to be a vector of length ```nSites```, where values indicate the number of years each site was sampled for
   * ```nTrapWeeks``` = The number of independent sampling weeks (or whichever unit of time you group the photos by). If this is the same at every site across all years it could just be a single number. But if the length of time you deployed the camera traps varies between sites and years, it may need to be a matrix, with sites as rows, years as columns and cell values representing the number of weeks each site was sampled for in each year. 
   * ```nOCV``` = The number of predictor variables to be included in the occurence model
   * ```nDCV``` = The number of predictor variables to be included in the detection model
@@ -27,16 +27,16 @@ For our model the constants and data will be:
 
 * Data:
   * ```Z``` = A binary 3D array, with dimensions ```nSites x nSps x nYears```, where cell values indicate whether (1) or not (0) each species was detected at each site in each year, across all trapping weeks combined.  
-  * ```Y``` = A 4D binary array, with dimensions ```nSites x nSps x nYears x nTrapWeeks```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, in each year. 
+  * ```Y``` = A 4D binary array, with dimensions ```nSites x nSps x nYears x max(nTrapWeeks)```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, in each year. 
     * If the number of trap weeks varies among sites and/or years, the length of the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the additional cells with ```NA```, as the model indexing will mean that these cells are never accessed.
-    * For example, if one site (j) was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable that we provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of Y was thus of length 30), the model will only ever access up to the 20th cell in the row of Y corresponding to site j.
+    * For example, if one site ```j``` was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of ```Y``` was thus of length 30), the model will only ever access up to the 20th cell in the row of Y corresponding to site ```j```.
   * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension)
   * ```SiteDCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the detection model covariates (that is, variables you think may effect species detection). Same structure as ```SiteOCV```.
-  * ```DMat2``` = A 2D matrix containing the squared geographic distance between each pair of camera trapping sites (both rows and columns will represent sites, and the cell values will represent the squared distance between a site in a given row and a site in a given column).     
+  * ```DMat2``` = A 2D matrix containing the squared geographic distance between each pair of camera trapping sites (both rows and columns will represent sites, and the cell values will represent the squared distance between a site in a given row and a site in a given column). This may need to be a 3D array if the position of camera traps varied with year, withe 3rd dimension representing years    
 
 ## The Model ##
 
-First, we want to give the model a name ```fireMod``` and tell R that we are going to be providing some ```nimble``` code. This line does just that:
+Now we have the inputs, we can create the model. First, we want to give the model a name ```fireMod``` and tell R that we are going to be providing some ```nimble``` code. This line does just that:
 ```r
 fireMod <- nimbleCode({    
 ```
