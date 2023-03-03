@@ -152,7 +152,25 @@ Here's our detection model. This time it's the same across all years:
       y[sp,site,week,year] ~ dbern(p[sp,site,week,year] * z[sp,site,year]) 
 
     }
+  }
 ```
+
+The parameters:
+* ```p[sp,site,week,year]``` = The probability of detecting a given species in a given site in a given week in a given year. Again, this is on the logit scale as it is a probability being calaculated as the outcome of the linear effects of some predictors. 
+* ```lp[sp,year]``` = This is the detection probability intercept for species i. Here I have let it vary between years, as perhaps in one year the species declined in abundance throughout the landscape for some reason, making it harder to detect. To be honest though, I think it would be ok to just use the same value for all years and this would probably improve the certainty of our parameter estimates.
+* ```bDCV[sp,1:nDCV]``` = A 2D matrix containing the slope parameters for all variables we may think influence the detection probability of a given species. I think camera trappers often include camera trap ID as a variable in detection models, in case some camera traps are slightly broken or others are just more sensitive for some reason.  
+* ```y[sp,site,week,year]``` = This is the model's estimate of whether or not we detected a given species at a given site in a given week in a given year. Again, the model will 'try' to calculate values of ```bDCV``` that best replicate our observed detection matrix ```Y```, but in this case it will not only try and fit the parameters to the instances we did detect the species ```Y[sp,site,year,week] = 1``` but also those where we didn't detect the species ```Y[sp,site,year,week] = 0```, as we can be certain in both cases that the values we provide are true. We are not considering whether or not the species occured there, just whether our camera traps took a photo of it.     
+
+
+Note that in our bernoulli trial to calculate ```y[sp,site,week,year]``` we set the probability to ```p[sp,site,week,year] * z[sp,site,year]```. This is because if a species didn't occur in a site (i.e., ```z[sp,site,year] = 0```) the probability that we will detect the species would always be 0 - te species isn't there so we are never going to detect it. In this way, detection is conditional on occurence, and the occurence and detection probability models are linked. The models are also conceptually linked in less direct ways:
+* If a species was not observed by our camera traps, but it had a really high occurence probability ```psi``` and low detection probability ```p```, in all likelihood the species did occur at that site, but we just weren't able to detect it.
+* Conversly, if a species wasn't observed at a site, had a really high detection probability ```p``` and a really low occurence probability ```psi``` then we could be fairly confident that the species was not detected because it truly was not present in that site.       
+
+That is the end of the model likelihood section, now we move onto priors.     
+
+---
+
+### **Priors** ###
 
 
 
