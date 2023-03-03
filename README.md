@@ -194,6 +194,10 @@ But if we had a variable that could only ever have a positive effect on species 
 
 However, in most ecological situations we cannot be confident on what the parameter estimate for a given species will be before we run the model (i.e., we have limited prior knowledge). Therefore, we tend to use 'uninformative' or 'vague' priors - prior probability distributions with wide ranges. The model will draw values from these wide distributions and gradually converge on the true distribution of values that the parameters are most likely to take, as it tailors the parameter estimates to best reproduce our confirmed observations ```Z[] = 1``` and detection/non-detection data ```Y```.    
 
-These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We can use these posterior distributions to make inference on the effects of predictor variables, the occurence of species at sites, and so on. In fact, we can extract a posterior distribution for any parameter estimated in the model structure, which is why the possible analyses you could do using the outputs of these models are so exciting!
+These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We can use these posterior distributions to make inference on the effects of predictor variables, the occurence of species at sites, and so on. In fact, we can extract a posterior distribution for any parameter estimated in the model structure, which is why the possible analyses you could do using the outputs of these models are so exciting!   
+
+Hierarchical Multi Species Occupancy models incorporate hierarchical structuring at the species and community level. All the parameters of the species level priors, and thus the model parameters themselves (sopes/betas, species occurrence, species detection...), are derived from community level 'hyperpriors - these are probability distributions that encompass the values a parameter could take for any species in the entire community, and the posterior distributions that result from these hyperprirs will thus tend to have a larger range than the species-level priors. 
+
+#### Species-Level Priors ####
 
 
