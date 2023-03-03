@@ -29,7 +29,7 @@ For our model the constants and data will be:
   * ```Z``` = A binary 3D array, with dimensions ```nSites x nSps x nYears```, where cell values indicate whether (1) or not (0) each species was detected at each site in each year, across all trapping weeks combined.  
   * ```Y``` = A 4D binary array, with dimensions ```nSites x nSps x nYears x max(nTrapWeeks)```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, in each year. 
     * If the number of trap weeks varies among sites and/or years, the length of the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the additional cells with ```NA```, as the model indexing will mean that these cells are never accessed.
-    * For example, if one site ```j``` was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of ```Y``` was thus of length 30), the model will only ever access up to the 20th cell in the row of Y corresponding to site ```j```.
+    * For example, if one site ```j``` was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of ```Y``` was thus of length 30), the model will only ever access up to the 20th cell in the row of ```Y``` corresponding to site ```j```.
   * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension)
   * ```SiteDCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the detection model covariates (that is, variables you think may effect species detection). Same structure as ```SiteOCV```.
   * ```DMat2``` = A 2D matrix containing the squared geographic distance between each pair of camera trapping sites (both rows and columns will represent sites, and the cell values will represent the squared distance between a site in a given row and a site in a given column). This may need to be a 3D array if the position of camera traps varied with year, withe 3rd dimension representing years    
@@ -63,7 +63,10 @@ We also estimate species occurrence and detection probabilities at each site ind
 And, finally, we estimate occurrence and detection probabilities at each site in each year independently:
 ```r
       for(year in 1:nYears){  
-```
+```      
+
+#### Occurence Model/s ####
+
 Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. We only want to run this model on data from the first year of sampling, so we specify this with ```if(year == 1){}```. 
 <br>
 A quick note: this model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we were to allow these effects to vary between years it would likely result in a very complex model with very uncertain results.
