@@ -80,7 +80,7 @@ A quick note: this model assumes that the effects of covariates (i.e., burning, 
 Above is our first occurence model. The parameters are:
 * ```psi[sp,site,year]``` = The probability of a species occuring at a given site in a given year. 
   * We calculate this on the logit scale, i.e. ``` logit() ```. This is because probabilities are constrained to values between 0 and 1, which can cause problems when when trying to estimate the effect sizes (slopes) of predictor variables. 
-  * Logit transforming the probabilities puts them on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
+  * Logit transforming puts the probabilities on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
 * ```abar[sp]``` = The standard model intercept parameter for a given species, this is species-specific but is always the same regardless of year or site.
 * ```a[sp,site,year]``` = The spatial autocorrelation parameter. 
   * I have let this vary by year, as in my research ongoing deforestation may result in sites becoming further apart over time. However, if your camera traps were always placed at the same spot every year, then you might not need to calculate this independently for each year. 
