@@ -49,7 +49,7 @@ Now we have the inputs, we can create the model. First, we want to give the mode
 ```r
 fireMod <- nimbleCode({    
 ```    
-
+### Likelihood ###
 In the next section we define the model likelihood, i.e. the effects of our predictor variables on our outcomes of interest, that is species occurence and detection probabilities. There will be some parameters in this section that you will not see in the above list of data inputs. That's because these are the parameters we are interested in estimating. We will create space to 'place' these estimates later in the model, but for now I explain what each new parameter is after it is first mentioned.      
 
 
