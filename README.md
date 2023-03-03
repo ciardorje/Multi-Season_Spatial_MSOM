@@ -181,17 +181,21 @@ We provide this prior knowledge in the form of probability distributions, from w
 <br/>
 <br/>
 <p align="center">
-<img src="https://user-images.githubusercontent.com/92942535/221204121-6f1c0896-a48a-437f-a505-bc33534ca3bd.png" width="700" height="900">
+<img src="https://user-images.githubusercontent.com/92942535/222784865-db4e4575-956d-4c63-8642-5d090577db24.png", width="300" height="200">
 </p>
 <br/>
 <br/>
 
-But if we had a variable that could only ever have a positive effect on species occurence (this is quite unlikely in reality, but is the easiest way to demonstrate the concept), 
-               #we could use a half-normal distribution, where the probability of getting a negative value is always 0
-      #In most ecological situations we cannot be very confident on what the parameter estimate for a given species will be before we run the model
-      #therefore, we tend to use 'uninformative' priors, probability distributions with very wide ranges
-      #The model will draw values from this distribution and gradually converge on the true distribution of values that the parameter is most likely to take
-      #These narrowed down distributions are called posterior distributions and are what the model provides us as outputs
-      #We will then use these for making inference on the effects of predictor variables, the occurence of species at sites, etc.
+But if we had a variable that could only ever have a positive effect on species occurence (this is quite unlikely in reality, but is the easiest way to demonstrate the concept), we could use a half-normal distribution, where the probability of getting a negative value is always 0:
+
+<br/>
+<br/>
+<p align="center">
+<img src="https://user-images.githubusercontent.com/92942535/222785175-c67819be-5c81-4074-9f58-bcb5b0b30e71.png", width="300" height="200">
+</p>
+<br/>
+<br/>
+
+In most ecological situations we cannot be very confident on what the parameter estimate for a given species will be before we run the model. Therefore, we tend to use 'uninformative' priors - probability distributions with very wide ranges. The model will draw values from this distribution and gradually converge on the true distribution of values that the parameter is most likely to take. These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We will then use these for making inference on the effects of predictor variables, the occurence of species at sites, etc.
 
 
