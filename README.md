@@ -71,14 +71,14 @@ And, finally, we estimate occurrence and detection probabilities at each site in
 ### **Occurence Model/s** ###
 
 Occurrence probabilities for each species in each site will be linked to each other across years (i.e., temporal correlation), but first we will define the model for year 1, the first year of sampling. We only want to run this model on data from the first year of sampling, so we specify this with ```if(year == 1){}```. 
-<br>
-A quick note: this model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we were to allow these effects to vary between years it would likely result in a very complex model with very uncertain results.
 ```r
         if(year == 1){
         
           logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV])
   ```
-Above is our first occurence model. The parameters are:
+Above is our first occurence model, that for year 1. A quick note: this model assumes that the effects of covariates (i.e., burning, logging, etc.) on each species are consistent across years. This is a fair assumption, and if we were to allow these effects to vary between years it would likely result in a very complex model with very uncertain results.     
+
+The parameters are:
 * ```psi[sp,site,year]``` = The probability of a species occuring at a given site in a given year. 
   * We calculate this on the logit scale, i.e. ``` logit() ```. This is because probabilities are constrained to values between 0 and 1, which can cause problems when when trying to estimate the effect sizes (slopes) of predictor variables. 
   * Logit transforming puts the probabilities on a continuous scale, i.e., they can range between -∞ and ∞, and we can then back transform to true probability values (0-1).
