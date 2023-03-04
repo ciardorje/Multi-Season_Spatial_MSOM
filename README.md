@@ -142,7 +142,7 @@ However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive in
 So, we have now finished specifying our models of species occurence. But how can the model possibly know whether a species occured and was not detected (referred to as sampling zeros) or whether the species was not detected because it truly was not present (referred to as structural zeros)? This is done by seperate, but linked, models of species detection probabilities. We will define these now.     
 
 
-Occupancy models depend on having repeat samples of the same site - this is because in cases where we detected a species at a site in one trap week ```Y[sp,site,year,week = 1] = 1```, but then didn't detect that species at the site in the next trap week ```Y[sp,site,year,week = 2] = 0```, the model can be confident that the non-observation in the second week represents a sampling zero rather than a structural zero, i.e., the species was there, we just didn't detect it.   
+Occupancy models depend on having repeat samples of the same site - this is because in cases where we detected a species at a site in one trap week ```Y[sp,site,year,week = 1] = 1```, but then didn't detect that species at the site in the next trap week ```Y[sp,site,year,week = 2] = 0```, the model can be confident that the non-observation in the second week represents a sampling zero rather than a structural zero, i.e., the species was there, we just didn't detect it. Based on this information alone, we could say the detection prbability was 0.5, as across two attempts we detected the species on one occasion (i.e., 50% of our samples). It is a little bit more complex though, as the model also incorporates knowledge of species detection across all sampled sites, as well as the potential effects of covariates on detection, specified in the detection model (below).    
 
 Here's our detection model. This time it's the same across all years:
 ```r
@@ -173,7 +173,7 @@ That is the end of the model likelihood section, now we move onto priors.
 ### **Priors** ###
 
 Bayesian models generate parameter estimates based on two things:
-* Observed data (in our case the arrays ```Z``` and ```Y```) 
+* Observed data (in our case, the arrays ```Z``` and ```Y```) 
 * Prior knowledge we have about what values the parameters of interest could take     
 
 We provide this prior knowledge in the form of probability distributions, from which the model draws possible parameter values. For example, if we had a variable we think could have a negative or a positive effect on a species' occurence, we would use a Normally distributed prior, as this can yield negative or positive values:
@@ -192,15 +192,24 @@ But if we had a variable that could only ever have a positive effect on species 
 </p>
 <br/>
 
-However, in most ecological situations we cannot be confident on what the parameter estimates will be before we run the model (i.e., we have limited prior knowledge). Therefore, we tend to use 'uninformative' or 'vague' priors - prior probability distributions with wide ranges. The model will draw values from these wide distributions and gradually converge on the true distribution of values that the parameters being estimated are most likely to take, as it tailors the estimates to best reproduce our confirmed observations ```Z[] = 1``` and detection/non-detection data ```Y```.    
+However, in most ecological situations we cannot be confident on what the parameter estimates will be before we run the model (i.e., we have limited *prior* knowledge). Therefore, we tend to use 'uninformative' or 'vague' priors - probability distributions with wide ranges. The model will draw values from these wide distributions and gradually converge on the distribution of values that the parameters being estimated are most likely to take, as it tailors the estimates to best reproduce our confirmed observations ```Z[] = 1``` and detection/non-detection data ```Y```.    
 
-These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We can use these posterior distributions to make inference on the effects of predictor variables, the occurence of species at sites, and so on. In fact, we can extract a posterior distribution for any parameter estimated in the model structure, which is why the possible analyses you could do using the outputs of these models are so exciting!   
+These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. These posterior distributions are comparable with frequentist model parameter estimates, but instead of just having an estimate of the mean effect size (slope) and uncertainty around this (normally Standard Error), Bayesian models provide a probability distribution of all the values the parameter being estimated could take. We can use these posterior distributions to make inference on the effects of predictor variables , the occurence of species at sites, and so on. In fact, we can extract a posterior distribution for any parameter estimated in the model structure, which is why the possible analyses you could do using the outputs of these models are so exciting!   
 
 Hierarchical Multi Species Occupancy models incorporate hierarchical structuring at the species and community level. Species level parameters are drawn from community level '*hyperparameter*' distributions - these are probability distributions that encompass all possible values a species-level parameter could take, across the entire community. As such, these hyperparameters will tend to have a wider range than the posterior distribution of the parameter estimates for any single species.   
 
-For example, say we want to estimate the effect of the duration of fires on species-specific occurence ```BFire[1:nSps]```, where ```BFire``` is a ```1:nSp``` long vector containing seperate estimates of the effect size (slope) of fire duration on each species in the community. We typically use normally distributed priors to estimate slopes, and so the community hyperparameter will be reresented by a mean ```BFire_sp_mean``` and standard deviation ```BFire_sp_sd```. We draw  community-level prior distributions on these. Once these distribution parameters have been estimated, the model will then insert these values into the species-level priors. For a given species, ```i```, the model will then randomly draw a slope estimate for the species ```BFire[i]``` from the resultant species-level prior distribution, i.e.:
+For example, say we want to estimate the effect of the duration of fires on species-specific occurence ```BFire[1:nSps]```, where ```BFire``` is a ```1:nSp``` long vector containing estimates of the effect (slope) of fire duration on each species in the community. We typically use normally distributed priors to estimate slopes, and so the community-level hyperparameter will be represented by a mean ```BFire_sp_mean``` and standard deviation ```BFire_sp_sd```, the parameters required to produce a Normal probability density function. We place prior distributions on these two parameters, from which potential parameter values will be drawn. Once these community-level distribution parameters have been estimated, the model will then draw an estimate of the slope for the effect of fire on each species ```BFire[1:nSps]``` from the resultant distribution, i.e.:
 ```r
-BFire[i] ~ rnorm(BFire_sp_mean, BFire_sp_sd)       
+#Priors for the community-level hyperparameter distribution
+BFire_sp_mean ~ rnorm(0, sd = 1)
+BFire_sp_sd ~ runif(0, 5)   #Standard deviations can only be positive, so we use a uniform distribution constrained to range between 0 and 5
+
+#Draw species-specific fire responses from the community hyperparameter distribution
+for(sp in 1:nSp){
+
+  BFire[i] ~ rnorm(BFire_sp_mean, BFire_sp_sd)
+
+}
 ```
 
 The advantage of this hierarchcial structuring is that for species that we have very few detections of (and thus can only gain limited information on where the species does and doesn't occur from our observed data), we can 'borrow' strength from the data for all of the other species in the community. This works on the rational that the community-level hyperpriors encompass all possible values that a species-level parameter could take, across the entire community. 
