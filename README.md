@@ -200,11 +200,13 @@ Hierarchical Multi Species Occupancy models incorporate hierarchical structuring
 
 For example, say we want to estimate the effect of the duration of fires on species-specific occurence ```BFire[1:nSps]```, where ```BFire``` is a ```1:nSp``` long vector containing estimates of the effect (slope) of fire duration on each species in the community. We typically use normally distributed priors to estimate slopes, and so the community-level hyperparameter will be represented by a mean ```BFire_sp_mean``` and standard deviation ```BFire_sp_sd```, the parameters required to produce a Normal probability density function. We place prior distributions on these two parameters, from which potential parameter values will be drawn. Once these community-level distribution parameters have been estimated, the model will then draw an estimate of the slope for the effect of fire on each species ```BFire[1:nSps]``` from the resultant distribution, i.e.:
 ```r
-#Priors for the community-level hyperparameter distribution
+#We set the priors for the community-level hyperparameter distribution
 BFire_sp_mean ~ rnorm(0, sd = 1)
-BFire_sp_sd ~ runif(0, 5)   #Standard deviations can only be positive, so we use a uniform distribution constrained to range between 0 and 5
+BFire_sp_sd ~ runif(0, 5)   #Standard deviations can only be positive, so we use a uniform distribution 
+                            #constrained to values between 0 and 5
 
-#Draw species-specific fire responses from the community hyperparameter distribution
+#Then we draw species-specific fire responses from the community hyperparameter distribution,
+#which is defined by our estimates of BFire_sp_mean and BFire_sp_sd
 for(sp in 1:nSp){
 
   BFire[i] ~ rnorm(BFire_sp_mean, BFire_sp_sd)
