@@ -172,11 +172,11 @@ That is the end of the model likelihood section, now we move onto priors.
 
 ### **Priors** ###
 
-#Bayesian models generate parameter estimates based on two things:
+Bayesian models generate parameter estimates based on two things:
 * Observed data (in our case the arrays ```Z``` and ```Y```) 
 * Prior knowledge we have about what values the parameters of interest could take     
 
-We provide this prior knowledge in the form of probability distributions, from which the model draws possible parameter values. For example, if we had a variable we think could have a negative or a positive effect on a species' occurence, we would use a Normally distributed prior, as this can yield negative or positive values.
+We provide this prior knowledge in the form of probability distributions, from which the model draws possible parameter values. For example, if we had a variable we think could have a negative or a positive effect on a species' occurence, we would use a Normally distributed prior, as this can yield negative or positive values:
 
 <br/>
 <p align="center">
@@ -184,7 +184,7 @@ We provide this prior knowledge in the form of probability distributions, from w
 </p>
 <br/>
 
-But if we had a variable that could only ever have a positive effect on species occurence (this is quite unlikely in reality, but is the easiest way to demonstrate the concept), we could use a half-normal distribution, where the probability of getting a negative value is always 0:
+But if we had a variable that could only ever have a positive effect on species occurence (this is unlikely in reality, but is the easiest way to demonstrate the concept), we could use a half-normal distribution, where the probability of getting a negative value is always 0:
 
 <br/>
 <p align="center">
@@ -192,11 +192,22 @@ But if we had a variable that could only ever have a positive effect on species 
 </p>
 <br/>
 
-However, in most ecological situations we cannot be confident on what the parameter estimate for a given species will be before we run the model (i.e., we have limited prior knowledge). Therefore, we tend to use 'uninformative' or 'vague' priors - prior probability distributions with wide ranges. The model will draw values from these wide distributions and gradually converge on the true distribution of values that the parameters are most likely to take, as it tailors the parameter estimates to best reproduce our confirmed observations ```Z[] = 1``` and detection/non-detection data ```Y```.    
+However, in most ecological situations we cannot be confident on what the parameter estimates will be before we run the model (i.e., we have limited prior knowledge). Therefore, we tend to use 'uninformative' or 'vague' priors - prior probability distributions with wide ranges. The model will draw values from these wide distributions and gradually converge on the true distribution of values that the parameters being estimated are most likely to take, as it tailors the estimates to best reproduce our confirmed observations ```Z[] = 1``` and detection/non-detection data ```Y```.    
 
 These narrowed down distributions are called posterior distributions and are what the model provides us as outputs. We can use these posterior distributions to make inference on the effects of predictor variables, the occurence of species at sites, and so on. In fact, we can extract a posterior distribution for any parameter estimated in the model structure, which is why the possible analyses you could do using the outputs of these models are so exciting!   
 
-Hierarchical Multi Species Occupancy models incorporate hierarchical structuring at the species and community level. All the parameters of the species level priors, and thus the model parameters themselves (sopes/betas, species occurrence, species detection...), are derived from community level 'hyperpriors - these are probability distributions that encompass the values a parameter could take for any species in the entire community, and the posterior distributions that result from these hyperprirs will thus tend to have a larger range than the species-level priors. 
+Hierarchical Multi Species Occupancy models incorporate hierarchical structuring at the species and community level. The parameters of species level priors are derived from community level '*hyperpriors*' - these are probability distributions that encompass all possible values a species-level prior distribution parameter could take across the entire community. As such, the posterior distributions of these hyperpriors will tend to have a wider range than the species-level priors.     
+
+We only use community-level hyperpriors to estimate the components of the species-level prior distributions - we do not directly estimate species-level model parameters (i.e., the model slopes and intercepts) from the hyperpriors, these species-level model paramaters are always drawn from the *species-level* priors.    
+
+For example, say we want to estimate the effect of fire on species-specific occurence, represented by the slope parameter ```beta1[1:nSps]```, where ```beta1``` is a ```1:nSp``` long vector containing seperate slope parameter estimates for each species in the community. We typically use normally distributed priors to estimate slope parameters for species, and each species-level prior will thus have a mean ```sp_mean[1:nSp]``` and standard deviation ```sp_sd[1:nSp]```. *These* (```sp_mean``` and ```sp_sd```) are the parameters we draw from community hyperpriors. The model will then randomly draw a slope estimate for species i ```beta1[i]``` from the resultant species-level prior distribution, i.e.:
+```r
+beta1[i] ~ rnorm(sp_mean[i], sp_sd[i])       
+```
+
+The advantage of this hierarchcial structuring is that for species that we have very few detections of (and thus can only gain limited information on where the species does and doesn't occur from our observed data), we can 'borrow' strength from the data for all of the other species in the community. This works on the rational that the community-level hyperpriors encompass all possible values that a species-level parameter could take, for any species in the community. 
+
+that all species . This process can even be extended further to estimate the occurence of species that were present in the landscape, but were not detected by our sampling in any site (i.e., entirely unobserved species). This is done through a process called data augmentation, but I don't thtink you'll need to do this for your data. 
 
 #### Species-Level Priors ####
 
