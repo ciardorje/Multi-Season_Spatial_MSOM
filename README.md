@@ -226,15 +226,16 @@ The below figure visually demonstrates this concept:
 
 <br/>
 <p align="center">
-<img src="https://user-images.githubusercontent.com/92942535/222967915-5198a5cd-83c3-4aea-b1c8-82dec5b5d942.png")
->
+<img src="https://user-images.githubusercontent.com/92942535/222967915-5198a5cd-83c3-4aea-b1c8-82dec5b5d942.png")>
 </p>
 <br/>
 
 #### Community-Level Hyperparameters ####
-```r
 
-```
 #### Species-Level Priors ####
 
+---
 
+### **Derived Quantities** ###
+
+You can specify in the model structure any derived community metrics that you would like to calculate (e.g., species richness, beta diversity...) as long as they are a function of the stimated parameters (normally the ```z``` matrix or ```psi```). However, I have found it much faster, although a bit less tidy, to calculate community metrics outside of the model itself, using the posterior distributions of ```z``` and ```psi```.
