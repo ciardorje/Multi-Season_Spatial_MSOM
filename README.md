@@ -102,7 +102,7 @@ In the first year of sampling we didn't have any prior knowledge of species occu
 ```r
       } else {
 
-        logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], PatchOCV[site,year,1:nOCV]) + 
+        logit(psi[sp,site,year]) <- abar[sp] + a[sp,site,year] + inprod(bOCV[sp,1:nOCV], siteOCV[site,year,1:nOCV]) + 
                                     (theta[sp] * z[sp,site,(year-1)])
     
       }
@@ -144,13 +144,13 @@ However, where ```Z[sp,site,year] = 0``` this cannot be taken as a definitive in
 So, we have now finished specifying our models of species occurence. But how can the model possibly know whether a species occured and was not detected (referred to as sampling zeros) or whether the species was not detected because it truly was not present (referred to as structural zeros)? This is done by seperate, but linked, models of species detection probabilities. We will define these now.     
 
 
-Occupancy models depend on having repeat samples of the same site - this is because in cases where we detected a species at a site in one trap week ```Y[sp,site,year,week = 1] = 1```, but then didn't detect that species at the site in the next trap week ```Y[sp,site,year,week = 2] = 0```, the model can be confident that the non-observation in the second week represents a sampling zero rather than a structural zero, i.e., the species was there, we just didn't detect it. Based on this information alone, we could say the detection prbability was 0.5, as across two attempts we detected the species on one occasion (i.e., 50% of our samples). It is a little bit more complex though, as the model also incorporates knowledge of species detection across all sampled sites, as well as the potential effects of covariates on detection, specified in the detection model (below).    
+Occupancy models depend on having repeat samples of the same site - this is because, for example, in cases where we detected a species at a site in one trap week ```Y[sp,site,year,week = 1] = 1```, but then didn't detect that species at the site in the next trap week ```Y[sp,site,year,week = 2] = 0```, the model can be confident that the non-observation in the second week represents a sampling zero rather than a structural zero, i.e., the species was there, we just didn't detect it. Based on this information alone, we could say the detection prbability was 0.5, as across two attempts we detected the species on one occasion (i.e., 50% of our samples). It is a little bit more complex though, as the model also incorporates knowledge of species detection across all sampled sites, as well as the potential effects of covariates on detection, specified in the detection model (below).    
 
 Here's our detection model. This time it's the same across all years:
 ```r
     for(week in 1:nTrapWeeks[site,year]){  
           
-      logit(p[sp,site,week,year]) <- lp[sp,year] + inprod(bDCV[sp,1:nDCV], SampleDCV[site,week,year,1:nDCV])
+      logit(p[sp,site,week,year]) <- lp[sp,year] + inprod(bDCV[sp,1:nDCV], siteDCV[site,week,year,1:nDCV])
       y[sp,site,week,year] ~ dbern(p[sp,site,week,year] * z[sp,site,year]) 
 
     }
@@ -159,8 +159,8 @@ Here's our detection model. This time it's the same across all years:
 
 The parameters:
 * ```p[sp,site,week,year]``` = The probability of detecting a given species in a given site in a given week in a given year. Again, this is on the logit scale as it is a probability being calaculated as the outcome of the linear effects of some predictors. 
-* ```lp[sp,year]``` = This is the detection probability intercept for species i. Here I have let it vary between years, as perhaps in one year the species declined in abundance throughout the landscape for some reason, making it harder to detect. To be honest though, I think it would be ok to just use the same value for all years and this would probably improve the certainty of our parameter estimates.
-* ```bDCV[sp,1:nDCV]``` = A 2D matrix containing the slope parameters for all variables we may think influence the detection probability of a given species. I think camera trappers often include camera trap ID as a variable in detection models, in case some camera traps are slightly broken or others are just more sensitive for some reason.  
+* ```lp[sp,year]``` = This is the detection probability intercept. Here I have let it vary between years, as perhaps in one year the species declined in abundance throughout the landscape for some reason, making it harder to detect. To be honest though, I think it would be ok to just use the same value for all years and this would probably improve the certainty of our parameter estimates.
+* ```bDCV[sp,1:nDCV]``` = A 2D matrix containing the slope parameters for all variables we may think influence the detection probability of a given species. I think camera trappers sometimes include camera trap ID as a random effect in detection models, in case some camera traps are slightly broken or others are just more sensitive for some reason.  
 * ```y[sp,site,week,year]``` = This is the model's estimate of whether or not we detected a given species at a given site in a given week in a given year. Again, the model will 'try' to calculate values of ```bDCV``` that best replicate our observed detection matrix ```Y```, but in this case it will not only try and fit the parameters to the instances we did detect the species ```Y[sp,site,year,week] = 1``` but also those where we didn't detect the species ```Y[sp,site,year,week] = 0```, as we can be certain in both cases that the values we provide are true. We are not considering whether or not the species occured there, just whether our camera traps took a photo of it.     
 
 
