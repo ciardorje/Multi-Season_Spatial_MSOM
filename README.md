@@ -210,8 +210,8 @@ BFire_sp_sd ~ dunif(0, 5)   #Standard deviations can only be positive, so we use
 #Then we draw species-specific fire responses from the community hyperparameter distribution
 for(sp in 1:nSp){
 
-  BFire[i] ~ dnorm(BFire_sp_mean, BFire_sp_sd)  #We use a normal distribution, 
-                                                #inputting the estimated community hyperparameter mean and sd
+  BFire[i] ~ dnorm(BFire_sp_mean, sd = BFire_sp_sd)  #We use a normal distribution, 
+                                                     #inputting the estimated community hyperparameter mean and sd
 
 }
 ```    
