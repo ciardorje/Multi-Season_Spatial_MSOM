@@ -3,25 +3,25 @@ A Hierarchical Multi Species Occupancy Model for estimating the effects of wildf
 
 The model is written using the 'nimble' language and MCMC sampler. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found NIMBLE to be much faster than the other two (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (parameters that can only hold values of 0 or 1, e.g., whether or not a species is present at a site). I'm particularly interested in the discrete parameters in my research, hence I like NIMBLE, and I think you most likely will be interested in these parameters too. Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
 
-Here I provide the model script with detailed annotations. Then, in the fireHMSOM.R file I provide just the model script itself. 
+Here I provide the model script with detailed annotation. Then, in the fireHMSOM.R file I provide just the model script itself. 
 
 ## The Data Inputs ##
 
 NIMBLE model inputs come under two categories: 
 
-* ```constants``` - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be analysed.
-* ```data``` - The variables that will be analysed, i.e., the response and predictor variables.      
+* ```constants``` - Values that tend to just be used for indexing within the model structure. These values cannot be changed by the model and won't themselves be modelled.
+* ```data``` - The variables that will be modelled, i.e., the response and predictor variables.      
 
 <br>
 For our model the constants and data will be:
 
 * Constants:
-  * ```nSps``` = The number of species you are modelling
-  * ```nSites``` = The number of sites you sampled
-  * ```nYears``` = The number of years you sampled for. If this varies among sites, this may need to be a vector of length ```nSites```, where values indicate the number of years each site was sampled for
+  * ```nSps``` = The number of species you are modelling.
+  * ```nSites``` = The number of sites you sampled.
+  * ```nYears``` = The number of years you sampled for. If this varies among sites, this may need to be a vector of length ```nSites```, where values indicate the number of years each site was sampled for.
   * ```nTrapWeeks``` = The number of independent sampling weeks (or whichever unit of time you group the photos by). If this is the same at every site across all years it could just be a single number. But if the length of time you deployed the camera traps varies between sites and years, it may need to be a matrix, with sites as rows, years as columns and cell values representing the number of weeks each site was sampled for in each year. 
-  * ```nOCV``` = The number of predictor variables to be included in the occurence model
-  * ```nDCV``` = The number of predictor variables to be included in the detection model
+  * ```nOCV``` = The number of predictor variables to be included in the occurence model/s.
+  * ```nDCV``` = The number of predictor variables to be included in the detection model.
 
 <br>
 
@@ -30,10 +30,10 @@ For our model the constants and data will be:
   * ```Y``` = Our detection records. A 4D binary array, with dimensions ```nSites x nSps x nYears x max(nTrapWeeks)```, where cell values indicate whether (1) or not (0) each species was detected at each site, in each trap week, in each year. 
     * If the number of trap weeks varies among sites and/or years, the length of the 4th dimension of the array should be the maximum number of trap weeks at any site in a single year; where sites were not sampled for the maximum number of trap weeks you can fill the additional cells with ```NA```, as the model indexing will mean that these cells are never accessed.
     * For example, if one site ```j``` was sampled for 20 weeks, the corresponding value in the ```nTrapWeeks``` variable provided in the constants will be 20. Therefore, even if the maximum number of sampling weeks at a single site was 30 weeks (and the 4th dimension of ```Y``` was thus of length 30), the model will only ever access up to the 20th cell in the row of ```Y``` corresponding to site ```j```.
-  * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension)
+  * ```SiteOCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the occurrence model covariates (that is, variables you think may effect species occurence). Sites will be in rows and each covariate will be in a seperate column, and this structure will be repeated for each year (i.e., the third dimension).
   * ```SiteDCV``` = A 3D array, with dimensions ```nSites x nOCV x nYears```, holding the values of the detection model covariates (that is, variables you think may effect species detection). Same structure as ```SiteOCV```.
   * ```DMat2``` = A 2D matrix containing the squared geographic distance between each pair of camera trapping sites (both rows and columns will represent sites, and the cell values will represent the squared distance between a site in a given row and a site in a given column). 
-    * This may need to be a 3D array if the position of camera traps varied with year, where the 3rd dimension will represent years    
+    * This may need to be a 3D array if the position of camera traps varied with year, where the 3rd dimension will represent years.    
 
 In our case the two main inputs are ```Z``` and ```Y```, containing our observed occurences and detections, respectively. These two inputs will be used by the model to estimate occurence and detection probabilities, and the model will output a new version of ```Z``` containing it's estimates of species occurence, '*corrected*' for imperfect detection.     
 
