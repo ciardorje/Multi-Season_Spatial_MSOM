@@ -155,6 +155,7 @@ Here's our detection model. This time it's the same across all years:
 
     }
   }
+}
 ```
 
 The parameters:
@@ -231,9 +232,9 @@ The below figure visually demonstrates this concept:
 <br/>
 
 #### Community-Level Hyperparameters ####
-Here are the community hyperparameters for our model. They all follow the same process as the above example, so I've just addedd as code comments what the priors specified on each line are referring to.    
+Here are the community hyperparameters for our model. They all follow the same process as the above example, so I've just commented on what the priors specified on each line are referring to.    
 
-You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept. This is mainly because the process is computationally intensive and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter. 
+You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept ```a```. This is mainly because the process is computationally intensive and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter. I'd be happy to try though. 
  
 ```r
 
@@ -271,8 +272,60 @@ You may notice, I haven't included community hyperparameters for the spatial aut
   }
 ```
 
-
 #### Species-Level Priors ####
+
+```r
+   for(sp in 1:nSp){
+      #Spatial autocorrelation - Gaussian Process Intercept
+      alpha2[sp] ~ dexp(1)
+      rho2[sp] ~ dexp(1)
+      delta <- 0.01
+      
+      for(site in 1:nSites){
+        for(year in 1:nYears){
+          z_score[sp,site,year] ~ dnorm(0, sd = 1)
+        }
+      }
+      
+      for(year in 1:nYears){
+        for(site in 1:(nSites - 1)){
+          
+          sigma[site,site,sp,year] <- alpha2[sp] + delta
+          
+          for(site2 in (site+1):nSites){
+            
+            sigma[site,site2,sp,year] <- alpha2[sp] * exp(-rho2[sp] * DMat2[site,l,year])
+            sigma[site2,site,sp,year] <- sigma[site,site2,sp,year]
+            
+          }
+        }
+        
+        sigma[nSites,nSites,sp,year] <- alpha2[sp] + delta
+        sigma_cd[,,sp,year] <- chol(sigma[,,sp,year])
+        a[sp,,year] <- sigma_cd[,,sp,year] %*% z_score[sp,,year]
+        
+      }
+      
+      #Temporal autocorrelation
+      theta[sp] ~ dnorm(mu.theta, sd = sd.theta)
+      
+      #Occurence coefficients
+      abar[sp] ~ dnorm(mu.abar, sd = sd.abar)
+      for(n in 1:nOCV){ bOCV[sp,n] ~ dnorm(mu.OCV[n], sd = sd.OCV[n]) }
+      
+      #Detection coefficients
+      for(year in 1:nYears){
+        
+        mu.eta[sp,year] <- mu.lp[year] + rho[year] * sd.lp[year]/sd.abar * (abar[sp] - mu.abar)
+        lp[sp,year] ~ dnorm(mu.eta[sp,year], sd = sd.eta[year])
+        
+      }
+      
+      for(n in 1:nDCV){ bDCV[sp,n] ~ dnorm(mu.DCV[n], sd = sd.DCV[n]) }
+      
+    }
+   }
+```
 
 ---
 
