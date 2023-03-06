@@ -231,12 +231,15 @@ The below figure visually demonstrates this concept:
 <br/>
 
 #### Community-Level Hyperparameters ####
+Here are the community hyperparameters for our model. They all follow the same process as the above example, so I've just addedd as code comments what the priors specified on each line are referring to.    
 
+You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept. This is mainly because the process is computationally intensive and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter. 
+ 
 ```r
 
-  abar.mean ~ dbeta(1, 1) #The mean of the community hyperparameter for the spatial autocorrelation intercept on the probability scale
-  mu.abar <- logit(abar.mean) #The mean of the community hyperparameter for the spatial autocorrelation intercept on the logit scale
-  sd.abar ~ dunif(0, 5) #The sd of the community hyperparameter for the spatial autocorrelation intercept on the probability scale
+  abar.mean ~ dbeta(1, 1) #The mean of the community hyperparameter for the standard occurence model intercept on the probability scale
+  mu.abar <- logit(abar.mean) #The mean of the community hyperparameter for the standard occurence model intercept on the logit scale
+  sd.abar ~ dunif(0, 5) #The sd of the community hyperparameter for the standard occurence model intercept on the probability scale
     
   theta.mean ~ dnorm(0, 0.1) #The mean of the community hyperparameter for the temporal autocorrelation effect, on the probability scale
   mu.theta ~ logit(theta.mean) #The mean of the community hyperparameter for the temporal autocorrelation effect, on the logit scale
@@ -249,7 +252,7 @@ The below figure visually demonstrates this concept:
     sd.lp[year] ~ dunif(0, 5)  #The sd of the community hyperparameter for the detection model intercept on the logit scale
       
     rho[year] ~ dunif(-1, 1)  #The coefficient of correlation between species occurence and detection probabilities
-    sd.eta[year] <- sd.lp[year]/rho[year]
+    sd.eta[year] <- sd.lp[year]/rho[year] #The covariance of the correllation between species occurrence and detection probabilities
       
   }
     
