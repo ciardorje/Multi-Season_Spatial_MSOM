@@ -274,8 +274,15 @@ You may notice, I haven't included community hyperparameters for the spatial aut
 
 #### Species-Level Priors ####
 
+Below are our species-level priors, all of which are a function of the community level hyperparameters, except the spatial autocorrelation parameter ```a```. Again these all follow the same structure as outlined in the example a couple sections up, so I've mostly just commented what each line refers to.    
+
+The one thing which you may not recognise is the correlation between occurence and detection probabilities. This works on the rational that more common species (i.e., those with higher occurence probability ```psi```) tend to be easier to detect (and will thus have a higher detection probability ```p```). This is often a good reflection of reality and is widely accepted as a good thing to include. For full details of the parameters see Zipkin et al. 2009 (10.1111/j.1365-2664.2009.01664.x).
+
+The spatial autocorrelation parameter is quite complex and would take a lot of words to explain - so I won't explain it, sorry. However, someone from my Masters cohort did a blog post about it if you want to know more (https://peter-stewart.github.io/blog/gaussian-process-occupancy-tutorial/). 
+
 ```r
    for(sp in 1:nSp){
+   
       #Spatial autocorrelation - Gaussian Process Intercept
       alpha2[sp] ~ dexp(1)
       rho2[sp] ~ dexp(1)
@@ -310,18 +317,20 @@ You may notice, I haven't included community hyperparameters for the spatial aut
       theta[sp] ~ dnorm(mu.theta, sd = sd.theta)
       
       #Occurence coefficients
-      abar[sp] ~ dnorm(mu.abar, sd = sd.abar)
-      for(n in 1:nOCV){ bOCV[sp,n] ~ dnorm(mu.OCV[n], sd = sd.OCV[n]) }
+      abar[sp] ~ dnorm(mu.abar, sd = sd.abar) #Intercept
+      for(n in 1:nOCV){ bOCV[sp,n] ~ dnorm(mu.OCV[n], sd = sd.OCV[n]) } #Slopes for each occurence covariate n
       
       #Detection coefficients
       for(year in 1:nYears){
         
-        mu.eta[sp,year] <- mu.lp[year] + rho[year] * sd.lp[year]/sd.abar * (abar[sp] - mu.abar)
-        lp[sp,year] ~ dnorm(mu.eta[sp,year], sd = sd.eta[year])
+        #The mean of the prior for the species-level detection probability intercept is calculated based on a covariance matrix between detection and occurence
+        #That is what the formula below does
+        mu.eta[sp,year] <- mu.lp[year] + rho[year] * sd.lp[year]/sd.abar * (abar[sp] - mu.abar) 
+        lp[sp,year] ~ dnorm(mu.eta[sp,year], sd = sd.eta[year]) #Prior for the species-specific detection model intercept on the logit scale 
         
       }
       
-      for(n in 1:nDCV){ bDCV[sp,n] ~ dnorm(mu.DCV[n], sd = sd.DCV[n]) }
+      for(n in 1:nDCV){ bDCV[sp,n] ~ dnorm(mu.DCV[n], sd = sd.DCV[n]) } #Slopes for each detection covariate n
       
     }
    }
