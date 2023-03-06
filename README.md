@@ -234,7 +234,7 @@ The below figure visually demonstrates this concept:
 #### Community-Level Hyperparameters ####
 Here are the community hyperparameters for our model. They all follow the same process as the above example, so I've just commented on what the priors specified on each line are referring to.    
 
-You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept ```a```. This is mainly because the process is computationally intensive and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter. I'd be happy to try though. 
+You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept ```a```. This is mainly because the process used to calculate these values is computationally intensive (as you will probably gather from the species-level calculations we use for ```a``` in the next section) and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter. I'd be happy to try though. 
  
 ```r
 
