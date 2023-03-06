@@ -232,6 +232,43 @@ The below figure visually demonstrates this concept:
 
 #### Community-Level Hyperparameters ####
 
+```r
+
+  abar.mean ~ dbeta(1, 1) #The mean of the community hyperparameter for the spatial autocorrelation intercept on the probability scale
+  mu.abar <- logit(abar.mean) #The mean of the community hyperparameter for the spatial autocorrelation intercept on the logit scale
+  sd.abar ~ dunif(0, 5) #The sd of the community hyperparameter for the spatial autocorrelation intercept on the probability scale
+    
+  theta.mean ~ dnorm(0, 0.1) #The mean of the community hyperparameter for the temporal autocorrelation effect, on the probability scale
+  mu.theta ~ logit(theta.mean) #The mean of the community hyperparameter for the temporal autocorrelation effect, on the logit scale
+  sd.theta ~ dunif(0, 5) #The sd of the community hyperparameter for the temporal autocorrelation effect, on the logit scale
+    
+  for(year in 1:nYears){
+      
+    p.mean[year] ~ dbeta(1, 1)  #The mean of the community hyperparameter for the detection model intercept on the probability scale
+    mu.lp[year] <- logit(p.mean[year]) #The mean of the community hyperparameter for the detection model intercept on the logit scale
+    sd.lp[year] ~ dunif(0, 5)  #The sd of the community hyperparameter for the detection model intercept on the logit scale
+      
+    rho[year] ~ dunif(-1, 1)  #The coefficient of correlation between species occurence and detection probabilities
+    sd.eta[year] <- sd.lp[year]/rho[year]
+      
+  }
+    
+  for(n in 1:nDCV){
+      
+    mu.DCV[n] ~ dnorm(0, 0.1) #The mean of the community hyperparameter for the slope of detection covariate n
+    sd.DCV[n] ~ dunif(0, 5) #The sd of the community hyperparameter for the slope of detection covariate n
+      
+  }
+    
+  for(n in 1:nOCV){
+      
+    mu.OCV[n] ~ dnorm(0, 0.1) #The mean of the community hyperparameter for the slope of occurrence covariate n
+    sd.OCV[n] ~ dunif(0, 5) #The sd of the community hyperparameter for the slope of occurrence covariate n
+      
+  }
+```
+
+
 #### Species-Level Priors ####
 
 ---
