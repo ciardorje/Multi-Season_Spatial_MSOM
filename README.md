@@ -276,7 +276,7 @@ You may notice, I haven't included community hyperparameters for the spatial aut
 
 Below are our species-level priors, all of which are a function of the community level hyperparameters, except the spatial autocorrelation parameter ```a```. Again these all follow the same structure as outlined in the example a couple sections up, so I've mostly just commented what each line refers to.    
 
-The one thing which you may not recognise is the correlation between occurence and detection probabilities. This works on the rational that more common species (i.e., those with higher occurence probability ```psi```) tend to be easier to detect (and will thus have a higher detection probability ```p```). This is often a good reflection of reality and is widely accepted as a good thing to include. For full details of the parameters see Zipkin et al. 2009 (10.1111/j.1365-2664.2009.01664.x).
+The one thing which you may not recognise is the correlation between occurence and detection probabilities. This works on the rational that more common species (i.e., those with higher occurence probability ```psi```) tend to be easier to detect (and will thus have a higher detection probability ```p```). This is often a good reflection of reality and is widely accepted as a good thing to include. For full details of the parameters see Zipkin et al. 2009 (https://doi.org/10.1111/j.1365-2664.2009.01664.x).
 
 The spatial autocorrelation parameter is quite complex and would take a lot of words to explain - so I won't explain it, sorry. However, someone from my Masters cohort did a blog post about it if you want to know more (https://peter-stewart.github.io/blog/gaussian-process-occupancy-tutorial/). 
 
