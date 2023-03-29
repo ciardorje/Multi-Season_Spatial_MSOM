@@ -1,7 +1,7 @@
 # Pantanal Fires Occupancy Model
 A Hierarchical Multi Species Occupancy Model for estimating the effects of wildfires on the occurence of mammal species in the Brazillian Pantanal. This is a multi-season model, which incorporates the potential influence of spatial autocorellation on species occurence via a Gaussian Process intercept.
 
-The model is written using the 'nimble' language and MCMC sampler. To put it (over)simply, MCMC sampling is just a method of estimating the possible values that statistical parameters of interest could take - this is done by iteratively drawing estimates from a potential distribution of parameter values, and we thus tend to run Bayesian models at least several thousand times. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found NIMBLE to be much faster than the other two (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (parameters that can only hold values of 0 or 1, e.g., whether or not a species is present at a site). I'm particularly interested in the discrete parameters in my research, hence I like NIMBLE, and I think you most likely will be interested in these parameters too. Plus, NIMBLE has a nice community page where you can ask questions https://groups.google.com/g/nimble-users
+The model is written using the 'nimble' language and MCMC sampler. To put it (over)simply, MCMC sampling is just a method of estimating the possible values that statistical parameters of interest could take - this is done by iteratively drawing estimates from a potential distribution of parameter values. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found NIMBLE to be much faster than the other two (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (parameters that can only hold values of 0 or 1, e.g., whether or not a species is present at a site). I'm particularly interested in the discrete parameters, hence I like NIMBLE.
 
 Here I provide the model script with detailed annotation. Then, in the fireHMSOM.R file I provide just the model script itself. 
 
@@ -111,11 +111,11 @@ The only difference here is the 'theta' parameter
 * ```theta[sp]``` = The increase in occurence probability (on the logit scale) if the species DID occur within the site in the year before, i.e., ```(year-1)```. We know whether or not the species occurred in that site in the year before from ```z[sp,site,(year-1)]```...
 * ```z[sp,site,(year-1)]``` = A binary variable indicating whether (1) or not (0) a species occured at a site in the year before. I'll cover more on how this is estimated in a moment. When a species didn't occur at a site in the year before ```z[sp,site,(year-1)]``` will be 0, and therefore ```(theta[sp] * z[sp,site,(year-1)])``` will also equal 0, and the theta parameter won't have any effect on occurence probability.     
 
-This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., if you had a sample from year 4 and you knew that the species occured at the site in all 3 previous years, the probability that the species would occur at the site in year 4 may be even higher than if it had just occurred there in year 3). I'd have to look into how to do this but I am happy to if you wanted to do that.    
+This process (temporal correlation) could possibly be expanded to take into account multiple years before (i.e., if you had a sample from year 4 and you knew that the species occured at the site in all 3 previous years, the probability that the species would occur at the site in year 4 may be even higher than if it had just occurred there in year 3).    
 
 <br>
 
-That's the end of our occurence probability estimation. Now we want to know whether or not the species *actually* occured at each site (or at least estimate whether it did. These occurence estimates are represented by the ```z``` parameter mentioned above:
+That's the end of our occurence probability estimation. Now we want to know whether or not the species *actually* occured at each site (or at least estimate whether it did). These occurence estimates are represented by the ```z``` parameter mentioned above:
 
 ```r
     z[i,j,y] ~ dbern(psi[i,j,y])
@@ -127,7 +127,7 @@ We use a Bernoulli trial (which can only output either 0 or 1) with the probabil
 
 <br>
 
-Remember one of our inputs at the start was ```Z``` (note the upper case)? Well ```z``` (lower case, the object in the above code) will contain the models attempts to correct for imperfect detection in our observed species occurence records (i.e., the values in that array ```Z```). In reality ```Z``` and ```z``` are the same object (we even specified that in our data input: ```data <- list(z = Z...```), but you can think of ```Z``` as an unchangeable version that will only *ever* include our observed occurences, while ```z``` can be altered by the model to add in instances (1 values) where the species occured but was not detected by our sampling.    
+Remember one of our inputs at the start was ```Z``` (note the upper case)? Well ```z``` (lower case, the object in the above code) will contain the models attempts to correct for imperfect detection in our observed species occurence records (i.e., the values in  ```Z```). In reality ```Z``` and ```z``` are the same object (we even specified that in our data input: ```data <- list(z = Z...```), but you can think of ```Z``` as an unchangeable version that will only *ever* include our observed occurences, while ```z``` can be altered by the model to add in instances where the species occured but was not detected by our sampling.    
 
 <br>
 
@@ -165,7 +165,7 @@ The parameters:
 * ```y[sp,site,week,year]``` = This is the model's estimate of whether or not we detected a given species at a given site in a given week in a given year. Again, the model will 'try' to calculate values of ```bDCV``` that best replicate our observed detection matrix ```Y```, but in this case it will not only try and fit the parameters to the instances we did detect the species ```Y[sp,site,year,week] = 1``` but also those where we didn't detect the species ```Y[sp,site,year,week] = 0```, as we can be certain in both cases that the values we provide are true. We are not considering whether or not the species occured there, just whether our camera traps took a photo of it.     
 
 
-Note that in our bernoulli trial to calculate ```y[sp,site,week,year]``` we set the probability to ```p[sp,site,week,year] * z[sp,site,year]```. This is because if a species didn't occur in a site (i.e., ```z[sp,site,year] = 0```) the probability that we will detect the species would always be 0 - te species isn't there so we are never going to detect it. In this way, detection is conditional on occurence, and the occurence and detection probability models are linked. The models are also conceptually linked in less direct ways:
+Note that in our bernoulli trial to calculate ```y[sp,site,week,year]``` we set the probability to ```p[sp,site,week,year] * z[sp,site,year]```. This is because if a species didn't occur in a site (i.e., ```z[sp,site,year] = 0```) the probability that we will detect the species would always be 0 - the species isn't there so we are never going to detect it. In this way, detection is conditional on occurence, and the occurence and detection probability models are linked. The models are also conceptually linked in less direct ways:
 * If a species was not observed by our camera traps, but it had a really high occurence probability ```psi``` and low detection probability ```p```, in all likelihood the species did occur at that site, but we just weren't able to detect it.
 * Conversly, if a species wasn't observed at a site, had a really high detection probability ```p``` and a really low occurence probability ```psi``` then we could be fairly confident that the species was not detected because it truly was not present in that site.       
 
@@ -234,7 +234,7 @@ The below figure visually demonstrates this concept:
 #### Community-Level Hyperparameters ####
 Here are the community hyperparameters for our model. They all follow the same process as the above example, so I've just commented on what the priors specified on each line are referring to.    
 
-You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept ```a```. This is mainly because the process used to calculate these values is computationally intensive (as you will probably gather from the species-level calculations we use for ```a``` in the next section) and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter. I'd be happy to try though. 
+You may notice, I haven't included community hyperparameters for the spatial autocorrelation intercept ```a```. This is mainly because the process used to calculate these values is computationally intensive (as you will probably gather from the species-level calculations we use for ```a``` in the next section) and I'm not sure the model would run/converge if we did incorporate hierarchical structuring in this parameter.
  
 ```r
 
@@ -278,7 +278,7 @@ Below are our species-level priors, all of which are a function of the community
 
 The one thing which you may not recognise is the correlation between occurence and detection probabilities. This works on the rational that more common species (i.e., those with higher occurence probability ```psi```) tend to be easier to detect (and will thus have a higher detection probability ```p```). This is often a good reflection of reality and is widely accepted as a good thing to include. For full details of the parameters see Zipkin et al. 2009 (https://doi.org/10.1111/j.1365-2664.2009.01664.x).
 
-The spatial autocorrelation parameter is quite complex and would take a lot of words to explain - so I won't explain it, sorry. However, someone from my Masters cohort did a blog post about it if you want to know more (https://peter-stewart.github.io/blog/gaussian-process-occupancy-tutorial/). 
+The spatial autocorrelation parameter is quite complex and would take a lot of words to explain - so I won't. There is a great blog post about it though, if you want to know more (https://peter-stewart.github.io/blog/gaussian-process-occupancy-tutorial/). 
 
 ```r
    for(sp in 1:nSp){
@@ -342,4 +342,4 @@ The spatial autocorrelation parameter is quite complex and would take a lot of w
 
 You can specify, in the model itself, any derived community metrics that you would like to calculate (e.g., species richness, beta diversity...), provided that they are a function of the estimated parameters (normally the ```z``` or ```psi``` matrices). For example, species richness at a given site in a given year would be calculated as ```Richness[site, year] <- sum(z[site,,year]```.       
 
-However, I have found it to be much faster to calculate community metrics outside of the model itself, using the posterior distributions of ```z``` and ```psi```. By doing it this way you can also use external packages to work with the estimated parameters. For example, you could use the ```'betapart'``` package to calculate nestedness and turnover, whereas to do so within the model you would have to manually specify the calculations. I have previously written models including the calculations for nestedness and turnover, so if you wanted to calculate these values within the model, just to see how it works, I can add those in.
+However, I have found it to be much faster to calculate community metrics outside of the model itself, using the posterior distributions of ```z``` and ```psi```. By doing it this way you can also use external packages to work with the estimated parameters. For example, you could use the ```'betapart'``` package to calculate nestedness and turnover, whereas to do so within the model you would have to manually specify the calculations. 
