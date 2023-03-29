@@ -1,5 +1,4 @@
-# Pantanal Fires Occupancy Model
-A Hierarchical Multi Species Occupancy Model for estimating the effects of wildfires on the occurence of mammal species in the Brazillian Pantanal. This is a multi-season model, which incorporates the potential influence of spatial autocorellation on species occurence via a Gaussian Process intercept.
+# Multi-Season Occupancy Model incorporating Spatial Autocorrelation in Occurence probabilities
 
 The model is written using the 'nimble' language and MCMC sampler. To put it (over)simply, MCMC sampling is just a method of estimating the possible values that statistical parameters of interest could take - this is done by iteratively drawing estimates from a potential distribution of parameter values. NIMBLE uses the same syntax as BUGS and JAGS, which are just other MCMC samplers, but I have found NIMBLE to be much faster than the other two (for these models at least). There is another MCMC sampler called STAN that is even faster, but it cannot sample discrete parameters (parameters that can only hold values of 0 or 1, e.g., whether or not a species is present at a site). I'm particularly interested in the discrete parameters, hence I like NIMBLE.
 
